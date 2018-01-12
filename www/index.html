@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0">
+  <title>Stencil Component Starter</title>
+  <script src="/build/stenciljs-virtual-scroll.js"></script>
+
+</head>
+
+<style>
+  alisa-webcom-product {
+    display: block;
+    height: 100%;
+
+  }
+
+
+  .virtual-container {
+    display: block;
+    height: 100%;
+  }
+
+  alisa-vscroll {
+    display: block;
+    height: 100%;
+  }
+
+  body {
+    margin: 0;
+  }
+
+
+  .fetch-container {
+    height: 100%;
+    position: absolute;
+    width: 100%;
+  }
+</style>
+
+<body>
+
+  <div class='fetch-container'>
+    <fetch-helper class="component" selector="">
+
+    </fetch-helper>
+  </div>
+
+
+  <script>
+    if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+      window.addEventListener('load', function(){
+        navigator.serviceWorker.register('/sw.js')
+          .then(function(reg) {
+            console.log('service worker registered', reg);
+
+            reg.onupdatefound = function() {
+              var installingWorker = reg.installing;
+
+              installingWorker.onstatechange = function() {
+                if (installingWorker.state === 'installed') {
+                  window.dispatchEvent(new Event('swUpdate'))
+                }
+              }
+            }
+          })
+          .catch(function(err) { console.log('service worker error', err) });
+      });
+    }
+  </script>
+
+</body>
+
+</html>

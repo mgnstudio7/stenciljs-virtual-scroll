@@ -1,0 +1,19 @@
+.offer {
+}
+.cover {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    background-size: cover;
+    margin: 0 auto;
+}
+.title {
+    font-size: 15px;
+    height: 40px;
+    text-align: center;
+}
+.cover:after {
+    content: "";
+    display: block;
+    padding-bottom: 67%;
+}

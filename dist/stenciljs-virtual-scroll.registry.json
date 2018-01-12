@@ -1,0 +1,82 @@
+{
+  "namespace": "stenciljs-virtual-scroll",
+  "components": [
+    [
+      "fetch-helper",
+      [
+        "b7yav49s",
+        "aw3ck9c6"
+      ],
+      1,
+      [
+        [
+          "changed",
+          5
+        ],
+        [
+          "el",
+          7
+        ],
+        [
+          "list",
+          5
+        ],
+        [
+          "selector",
+          1,
+          1,
+          2
+        ]
+      ]
+    ],
+    [
+      "virtual-scroll",
+      [
+        "li2jcedb",
+        "nhucaj7p"
+      ],
+      1,
+      [
+        [
+          "bottomOffset",
+          1,
+          1,
+          4
+        ],
+        [
+          "changed",
+          5
+        ],
+        [
+          "el",
+          7
+        ],
+        [
+          "list",
+          1,
+          1,
+          1
+        ],
+        [
+          "selector",
+          1,
+          1,
+          2
+        ],
+        [
+          "setInfinateFinally",
+          6
+        ],
+        [
+          "setInfinateOn",
+          6
+        ]
+      ],
+      0,
+      2
+    ]
+  ],
+  "core": "stenciljs-virtual-scroll.x1oygtuo.js",
+  "coreSsr": "stenciljs-virtual-scroll.bjqpsrol.js",
+  "corePolyfilled": "stenciljs-virtual-scroll.sacmdr8j.js"
+}

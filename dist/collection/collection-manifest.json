@@ -1,0 +1,107 @@
+{
+  "components": [
+    {
+      "tag": "fetch-helper",
+      "componentClass": "FetchHelperWebComponent",
+      "componentPath": "components/fetch-helper/fetch-helper.js",
+      "styles": {
+        "$": {
+          "stylePaths": [
+            "components/fetch-helper/fetch-helper.scss"
+          ]
+        }
+      },
+      "props": [
+        {
+          "name": "selector",
+          "type": "string"
+        }
+      ],
+      "states": [
+        {
+          "name": "changed"
+        },
+        {
+          "name": "list"
+        }
+      ],
+      "hostElement": {
+        "name": "el"
+      }
+    },
+    {
+      "tag": "virtual-scroll",
+      "componentClass": "VirualScrollWebComponent",
+      "componentPath": "components/virtual-scroll/virtual-scroll.js",
+      "styles": {
+        "$": {
+          "stylePaths": [
+            "components/virtual-scroll/virtual-scroll.scss"
+          ]
+        }
+      },
+      "props": [
+        {
+          "name": "bottomOffset",
+          "type": "number"
+        },
+        {
+          "name": "list",
+          "type": "any"
+        },
+        {
+          "name": "selector",
+          "type": "string"
+        }
+      ],
+      "propsDidChange": [
+        {
+          "name": "list",
+          "method": "dataDidChangeHandler"
+        }
+      ],
+      "states": [
+        {
+          "name": "changed"
+        }
+      ],
+      "methods": [
+        {
+          "name": "setInfinateFinally"
+        },
+        {
+          "name": "setInfinateOn"
+        }
+      ],
+      "hostElement": {
+        "name": "el"
+      },
+      "events": [
+        {
+          "event": "toBottom"
+        },
+        {
+          "event": "update"
+        }
+      ],
+      "slot": "hasNamedSlots"
+    }
+  ],
+  "bundles": [
+    {
+      "components": [
+        "fetch-helper"
+      ]
+    },
+    {
+      "components": [
+        "virtual-scroll"
+      ]
+    }
+  ],
+  "compiler": {
+    "name": "@stencil/core",
+    "version": "0.1.1-0",
+    "typescriptVersion": "2.6.2"
+  }
+}

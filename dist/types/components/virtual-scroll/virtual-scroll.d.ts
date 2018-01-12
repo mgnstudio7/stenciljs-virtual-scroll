@@ -1,0 +1,38 @@
+import { EventEmitter } from '@stencil/core';
+export declare class VirualScrollWebComponent {
+    list: Array<any>;
+    selector: string;
+    bottomOffset: number;
+    changed: string[];
+    el: HTMLElement;
+    private position;
+    private parentScroll;
+    private topPadding;
+    private totalHeight;
+    private first;
+    private last;
+    private bottomOffsetIndex;
+    private scrollEventSubscriber;
+    private listDimensions;
+    toBottom: EventEmitter<number>;
+    update: EventEmitter<Array<any>>;
+    private infinateOn;
+    private infinateFinally;
+    private initRender;
+    private vscrollOffsetTop;
+    private contentOffsetTop;
+    dataDidChangeHandler(): void;
+    componentDidLoad(): void;
+    componentDidUnload(): void;
+    componentWillLoad(): void;
+    init(): void;
+    unwatch(): void;
+    updateVirtual(update?: boolean): void;
+    setInfinateOn(): void;
+    setInfinateFinally(): void;
+    private _addDimensions();
+    private _addNewDimension(height, rindex);
+    private _testDimensions();
+    componentDidUpdate(): void;
+    render(): JSX.Element;
+}
