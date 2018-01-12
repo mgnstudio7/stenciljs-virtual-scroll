@@ -145,7 +145,7 @@ virtual-scroll {
 }
 ```
 
-If you need to use it without framework, see fetch-helper component.
+If you need to use it without framework, watch fetch-helper component.
 
 
 # API
@@ -165,11 +165,11 @@ this event is fired if scroll came to the end
 
 **update()** 
 
-this event is fired every time then virtual scroll data is changed
+this event is fired every time when virtual scroll data is changed
 
 **setInfinateOn()** 
 
-this method must call every time then lazy load data is finish.
+this method must call every time when lazy load data is finish.
 If this method do not call. toBottom event never fired again
 
 **setInfinateFinally()** 
