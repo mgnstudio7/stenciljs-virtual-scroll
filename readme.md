@@ -151,22 +151,28 @@ If you need to use it without framework, see fetch-helper component.
 # API
 
 **Selector** 
+
 In this attribute you must set selector of scrollable container (ionic application example).
 If attribute is empty, component use inner scroll container.
 
 **bottom-offset** 
+
 offset of elements to fired toBottom() event
 
 **toBottom()** 
+
 this event is fired if scroll came to the end
 
 **update()** 
+
 this event is fired every time then virtual scroll data is changed
 
 **setInfinateOn()** 
+
 this method must call every time then lazy load data is finish.
 If this method do not call. toBottom event never fired again
 
 **setInfinateFinally()** 
+
 this method must call if lazy load finally and never fired toBottom() evend, and hide loader element
 
