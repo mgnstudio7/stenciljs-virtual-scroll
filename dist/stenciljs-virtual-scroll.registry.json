@@ -4,8 +4,8 @@
     [
       "fetch-helper",
       [
-        "b7yav49s",
-        "aw3ck9c6"
+        "fetch-helper",
+        null
       ],
       1,
       [
@@ -32,8 +32,8 @@
     [
       "virtual-scroll",
       [
-        "li2jcedb",
-        "nhucaj7p"
+        "virtual-scroll",
+        null
       ],
       1,
       [
@@ -46,6 +46,10 @@
         [
           "changed",
           5
+        ],
+        [
+          "clear",
+          6
         ],
         [
           "el",
@@ -76,7 +80,7 @@
       2
     ]
   ],
-  "core": "stenciljs-virtual-scroll.x1oygtuo.js",
-  "coreSsr": "stenciljs-virtual-scroll.bjqpsrol.js",
-  "corePolyfilled": "stenciljs-virtual-scroll.sacmdr8j.js"
+  "core": "stenciljs-virtual-scroll.core.js",
+  "coreSsr": "stenciljs-virtual-scroll.core.ssr.js",
+  "corePolyfilled": "es5-build-disabled.js"
 }

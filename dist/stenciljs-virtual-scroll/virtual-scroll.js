@@ -1,3 +1,16 @@
+/*! Built with http://stenciljs.com */
+
+window['stenciljs-virtual-scroll'].loadStyles("virtual-scroll",".vscroll.inner {\n  overflow-y: auto;\n  height: 100%;\n}\n\n.vscroll.external {\n  overflow-y: hidden;\n}\n\n.vscroll {\n  overflow-x: hidden;\n  position: relative;\n  display: block;\n}\n\n.vscroll .vscroll-back {\n  width: 1px;\n  opacity: 0;\n}\n\n.vscroll .vscroll-content {\n  top: 0;\n  left: 0;\n  width: 100%;\n  position: absolute;\n}\n\n.vscroll .vscroll-content.inner {\n  height: 100%;\n}\n\n.infinate-finally div[slot='loader'] {\n  display: none;\n}\nvirtual-scroll.hydrated{visibility:inherit}");
+window['stenciljs-virtual-scroll'].loadComponents(
+
+/**** module id (dev mode) ****/
+"virtual-scroll",
+
+/**** component modules ****/
+function importComponent(exports, h, Context, publicPath) {
+"use strict";
+// @stencil/core
+
 /*
 logic of this component base on
 
@@ -8,8 +21,7 @@ External scroll container must heip if ypu are using some additional content on 
 and it must scrolled with scroll component.
 
 */
-import { EventEmitter } from '@stencil/core';
-export class VirualScrollWebComponent {
+class VirualScrollWebComponent {
     constructor() {
         //list og imported values
         this.list = [];
@@ -212,3 +224,54 @@ export class VirualScrollWebComponent {
             h("slot", { name: "loader" })));
     }
 }
+
+exports['virtual-scroll'] = VirualScrollWebComponent;
+},
+
+
+/***************** virtual-scroll *****************/
+[
+/** virtual-scroll: tag **/
+"virtual-scroll",
+
+/** virtual-scroll: members **/
+[
+  [ "bottomOffset", /** prop **/ 1, /** observe attribute **/ 1, /** type number **/ 4 ],
+  [ "changed", /** state **/ 5, /** do not observe attribute **/ 0, /** type any **/ 1 ],
+  [ "clear", /** method **/ 6, /** do not observe attribute **/ 0, /** type any **/ 1 ],
+  [ "el", /** element ref **/ 7, /** do not observe attribute **/ 0, /** type any **/ 1 ],
+  [ "list", /** prop **/ 1, /** observe attribute **/ 1, /** type any **/ 1 ],
+  [ "selector", /** prop **/ 1, /** observe attribute **/ 1, /** type string **/ 2 ],
+  [ "setInfinateFinally", /** method **/ 6, /** do not observe attribute **/ 0, /** type any **/ 1 ],
+  [ "setInfinateOn", /** method **/ 6, /** do not observe attribute **/ 0, /** type any **/ 1 ]
+],
+
+/** virtual-scroll: host **/
+{},
+
+/** virtual-scroll: events **/
+[
+  [
+    /*****  virtual-scroll toBottom ***** /
+    /* event name ***/ "toBottom"
+  ],
+  [
+    /*****  virtual-scroll update ***** /
+    /* event name ***/ "update"
+  ]
+],
+
+/** virtual-scroll: propWillChanges **/
+0 /* no prop will change methods */,
+
+/** virtual-scroll: propDidChanges **/
+[
+  [
+    /*****  virtual-scroll prop did change [0] ***** /
+    /* prop name **/ "list",
+    /* call fn *****/ "dataDidChangeHandler"
+  ]
+]
+
+]
+);

@@ -176,3 +176,15 @@ If this method do not call. toBottom event never fired again
 
 this method must call if lazy load finally and never fired toBottom() evend, and hide loader element
 
+**clear()** 
+
+this method clear all need params of component, but not list
+
+```ts
+....
+    this.vscroll.nativeElement.list = [];
+    this.vscroll.nativeElement.clear(); 
+    //this.changeDetector.detectChanges(); if need     
+....
+```
+

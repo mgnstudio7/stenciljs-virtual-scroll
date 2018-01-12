@@ -84,7 +84,6 @@ export class VirualScrollWebComponent {
   //change list event
   @PropDidChange('list')
   dataDidChangeHandler() {
-
     this.list.map((m, i) => {
       if (!m.index) {
         m.index = i;
@@ -92,19 +91,17 @@ export class VirualScrollWebComponent {
     })
     this.updateVirtual(true);
     //recalculation dimesions of list items
-    this._addDimensions();
+    this._setDimensions();
   }
 
   //life cicle methods
   componentDidLoad() {
-    //console.log('this.totalHeight', this.selector)
     if (this.selector.length > 0) {
       this.parentScroll = document.querySelector('.' + this.selector);
     }
     else {
       this.parentScroll = this.el.querySelector('.vscroll');
     }
-    //console.log('this.parentScroll', this.parentScroll)
 
     this.init();
   }
@@ -119,15 +116,9 @@ export class VirualScrollWebComponent {
   }
 
   //init/reinit
-  init() {
+  private init() {
 
-    this.first = null;
-    this.last = null;
-    this.topPadding = 0;
-    this.totalHeight = 0;
-    this.listDimensions = [];
-    //this.virtual = [];
-    this.position = 0;
+    this._setDefParams();
 
     let content = this.parentScroll;
     this.contentOffsetTop = (content) ? content['offsetTop'] : 0;
@@ -143,6 +134,15 @@ export class VirualScrollWebComponent {
 
   }
 
+  private _setDefParams() {
+    this.first = null;
+    this.last = null;
+    this.topPadding = 0;
+    this.listDimensions = [];
+    this.totalHeight = 0;
+    this.position = 0;
+  }
+
   //dispatch listener of scroll on unload
   unwatch() {
     if (this.scrollEventSubscriber) {
@@ -151,7 +151,7 @@ export class VirualScrollWebComponent {
   }
 
   //update virtual list items
-  updateVirtual(update:boolean = false) {
+  updateVirtual(update: boolean = false) {
 
     let findex = (this.first) ? this.first.rindex : 0;
     let lindex = (this.last) ? this.last.rindex : 0;
@@ -171,7 +171,7 @@ export class VirualScrollWebComponent {
       let v = this.list.slice(this.first.rindex, this.last.rindex + this.bottomOffsetIndex);
 
       if ((findex != this.first.rindex || lindex != this.last.rindex) || update) {
-        
+
         //this.virtual = v;
         this.update.emit(v);
 
@@ -190,7 +190,7 @@ export class VirualScrollWebComponent {
 
     //bottom event
     if (this.last && this.last.rindex >= this.list.length - 1 - this.bottomOffset) {
-      if (this.infinateOn && !this.infinateFinally) {
+      if (this.infinateOn && !this.infinateFinally && this.list.length > 0) {
         this.infinateOn = false;
         this.toBottom.emit(this.position);
       }
@@ -210,13 +210,19 @@ export class VirualScrollWebComponent {
     this.infinateFinally = true;
   }
 
-  //recalculation dimesions of list items
-  private _addDimensions(): boolean {
+  //clear component data
+  @Method()
+  clear() {
+    this.list = [];
+    this._setDefParams();
+    this.changed = [...this.changed, ''];
+  }
 
+  //recalculation dimesions of list items
+  private _setDimensions(): boolean {
     let oldTotal = this.totalHeight;
 
     let nodes = this.el.querySelectorAll('.virtual-slot .virtual-item');
-    //console.log(nodes)
     if (nodes.length > 0) {
       for (let vindex = 0; vindex <= nodes.length - 1; vindex++) {
         let node = nodes[vindex];
@@ -228,7 +234,6 @@ export class VirualScrollWebComponent {
       }
     }
 
-    //console.log('this.listDimensions', this.listDimensions)
     return (this.totalHeight != oldTotal);
   }
 
@@ -253,11 +258,6 @@ export class VirualScrollWebComponent {
       if (this.listDimensions[i] && nodes[i - offsetIndex]) {
         if (nodes[i - offsetIndex]['offsetHeight'] != this.listDimensions[i].height) {
           console.warn("One or more nodes change height after calculation dimensions. Check scroll", i);
-          // console.log("nodes[i - offsetIndex]['offsetHeight']", nodes[i - offsetIndex]['offsetHeight'])
-          // console.log("nodes[i - offsetIndex][id]", nodes[i - offsetIndex]['id'])
-          // console.log("this.listDimensions[i].height", this.listDimensions[i].height)
-          // console.log("i - offsetIndex", i - offsetIndex);
-          // console.log("i", i);
         }
       }
     });
@@ -270,8 +270,7 @@ export class VirualScrollWebComponent {
     //if is init render need call update virtual, 
     //if is not init check update height. If height change render again!
 
-    let isNewHeight = this._addDimensions();
-    //console.log("componentDidUpdate", isNewHeight);
+    let isNewHeight = this._setDimensions();
 
     //if first render finished, recalculate virtual
     if (!this.initRender) {

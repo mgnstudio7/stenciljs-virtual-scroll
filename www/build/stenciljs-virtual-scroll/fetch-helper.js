@@ -1,4 +1,15 @@
-export class FetchHelperWebComponent {
+/*! Built with http://stenciljs.com */
+
+window['stenciljs-virtual-scroll'].loadStyles("fetch-helper",".cover {\n  position: relative;\n  width: 150px;\n  height: 150px;\n  background-size: cover;\n  margin: 0 auto;\n}\n\n.title {\n  font-size: 15px;\n  height: 40px;\n  text-align: center;\n}\n\n.cover:after {\n  content: \"\";\n  display: block;\n  padding-bottom: 67%;\n}\n\n.reload {\n  position: absolute;\n  top: 0;\n  left: 0;\n  margin: 10px;\n  padding: 10px;\n  background: #ccc;\n  cursor: pointer;\n  z-index: 1;\n}\nfetch-helper.hydrated{visibility:inherit}");
+window['stenciljs-virtual-scroll'].loadComponents(
+
+/**** module id (dev mode) ****/
+"fetch-helper",
+
+/**** component modules ****/
+function importComponent(exports, h, Context, publicPath) {
+"use strict";
+class FetchHelperWebComponent {
     constructor() {
         this.list = [];
         //class selector
@@ -109,3 +120,26 @@ export class FetchHelperWebComponent {
         ]);
     }
 }
+
+exports['fetch-helper'] = FetchHelperWebComponent;
+},
+
+
+/***************** fetch-helper *****************/
+[
+/** fetch-helper: tag **/
+"fetch-helper",
+
+/** fetch-helper: members **/
+[
+  [ "changed", /** state **/ 5, /** do not observe attribute **/ 0, /** type any **/ 1 ],
+  [ "el", /** element ref **/ 7, /** do not observe attribute **/ 0, /** type any **/ 1 ],
+  [ "list", /** state **/ 5, /** do not observe attribute **/ 0, /** type any **/ 1 ],
+  [ "selector", /** prop **/ 1, /** observe attribute **/ 1, /** type string **/ 2 ]
+],
+
+/** fetch-helper: host **/
+{}
+
+]
+);

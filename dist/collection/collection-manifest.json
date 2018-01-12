@@ -67,6 +67,9 @@
       ],
       "methods": [
         {
+          "name": "clear"
+        },
+        {
           "name": "setInfinateFinally"
         },
         {

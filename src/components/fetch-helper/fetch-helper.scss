@@ -17,3 +17,14 @@
     display: block;
     padding-bottom: 67%;
 }
+
+.reload {
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 10px;
+    padding: 10px;
+    background: #ccc;
+    cursor: pointer;
+    z-index: 1;
+}

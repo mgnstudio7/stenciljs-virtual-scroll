@@ -7,5 +7,6 @@ export declare class FetchHelperWebComponent {
     componentWillLoad(): void;
     request(): void;
     lazyRequest(): void;
+    reload(event: UIEvent): void;
     render(): JSX.Element[];
 }

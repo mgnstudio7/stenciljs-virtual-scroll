@@ -25,12 +25,14 @@ export declare class VirualScrollWebComponent {
     componentDidLoad(): void;
     componentDidUnload(): void;
     componentWillLoad(): void;
-    init(): void;
+    private init();
+    private _setDefParams();
     unwatch(): void;
     updateVirtual(update?: boolean): void;
     setInfinateOn(): void;
     setInfinateFinally(): void;
-    private _addDimensions();
+    clear(): void;
+    private _setDimensions();
     private _addNewDimension(height, rindex);
     private _testDimensions();
     componentDidUpdate(): void;
