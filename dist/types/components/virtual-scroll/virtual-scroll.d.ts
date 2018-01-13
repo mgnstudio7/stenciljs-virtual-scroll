@@ -27,6 +27,7 @@ export declare class VirualScrollWebComponent {
     componentDidUnload(): void;
     componentWillLoad(): void;
     private init();
+    private _listener();
     private _setDefParams();
     updateVirtual(update?: boolean): void;
     setInfinateOn(): void;

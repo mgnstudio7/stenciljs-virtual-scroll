@@ -65,8 +65,9 @@ export class VirualScrollWebComponent {
     }
     //dispatch listener of scroll on unload
     unwatch() {
-        if (this.parentScroll)
-            this.parentScroll.removeEventListener('click');
+        if (this.parentScroll) {
+            this.parentScroll.removeEventListener('scroll', this._listener);
+        }
     }
     //life cicle methods
     componentDidUnload() {
@@ -83,9 +84,12 @@ export class VirualScrollWebComponent {
         let vscroll = this.el.querySelector('.vscroll');
         this.vscrollOffsetTop = (vscroll) ? vscroll['offsetTop'] : 0;
         this.scrollEventSubscriber = this.parentScroll.addEventListener('scroll', (e) => {
-            this.position = this.parentScroll['scrollTop'] - this.vscrollOffsetTop;
-            this.updateVirtual();
+            this._listener();
         });
+    }
+    _listener() {
+        this.position = this.parentScroll['scrollTop'] - this.vscrollOffsetTop;
+        this.updateVirtual();
     }
     _setDefParams() {
         this.first = null;
