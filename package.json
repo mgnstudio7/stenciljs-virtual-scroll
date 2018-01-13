@@ -1,6 +1,6 @@
 {
   "name": "stenciljs-virtual-scroll",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "steniljs virtual scroll webcomponent",
   "main": "dist/stenciljs-virtual-scroll.js",
   "types": "dist/types/index.d.ts",
@@ -18,7 +18,7 @@
     "test.watch": "jest --watch --no-cache"
   },
   "dependencies": {
-    "@stencil/core": "next",
+    "@stencil/core": "^0.1.1-0",
     "@stencil/utils": "0.0.4"
   },
   "devDependencies": {

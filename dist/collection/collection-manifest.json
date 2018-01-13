@@ -52,6 +52,10 @@
         {
           "name": "selector",
           "type": "string"
+        },
+        {
+          "name": "VirtualOffsetEnd",
+          "type": "number"
         }
       ],
       "propsDidChange": [
@@ -68,6 +72,9 @@
       "methods": [
         {
           "name": "clear"
+        },
+        {
+          "name": "scrollToNode"
         },
         {
           "name": "setInfinateFinally"

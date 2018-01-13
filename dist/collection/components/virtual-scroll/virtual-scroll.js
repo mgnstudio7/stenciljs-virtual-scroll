@@ -17,6 +17,8 @@ export class VirualScrollWebComponent {
         this.selector = '';
         //offset bottom event
         this.bottomOffset = 0;
+        //reserve of the bootom rows
+        this.VirtualOffsetEnd = 3;
         //change detection strategy
         this.changed = [];
         //position of scroll
@@ -27,8 +29,6 @@ export class VirualScrollWebComponent {
         this.topPadding = 0;
         //full height of component
         this.totalHeight = 0;
-        //reserve of the bootom rows
-        this.bottomOffsetIndex = 3;
         //list items dimensions
         this.listDimensions = [];
         //state to enable bottom infinate event
@@ -63,6 +63,11 @@ export class VirualScrollWebComponent {
         }
         this.init();
     }
+    //dispatch listener of scroll on unload
+    unwatch() {
+        if (this.parentScroll)
+            this.parentScroll.removeEventListener('click');
+    }
     //life cicle methods
     componentDidUnload() {
         this.unwatch();
@@ -90,12 +95,6 @@ export class VirualScrollWebComponent {
         this.totalHeight = 0;
         this.position = 0;
     }
-    //dispatch listener of scroll on unload
-    unwatch() {
-        if (this.scrollEventSubscriber) {
-            this.scrollEventSubscriber.unsubscribe();
-        }
-    }
     //update virtual list items
     updateVirtual(update = false) {
         let findex = (this.first) ? this.first.rindex : 0;
@@ -111,7 +110,7 @@ export class VirualScrollWebComponent {
         //virtual list set ...
         if (this.first && this.last) {
             this.topPadding = this.first.start;
-            let v = this.list.slice(this.first.rindex, this.last.rindex + this.bottomOffsetIndex);
+            let v = this.list.slice(this.first.rindex, this.last.rindex + this.VirtualOffsetEnd);
             if ((findex != this.first.rindex || lindex != this.last.rindex) || update) {
                 //this.virtual = v;
                 this.update.emit(v);
@@ -147,6 +146,49 @@ export class VirualScrollWebComponent {
         this.list = [];
         this._setDefParams();
         this.changed = [...this.changed, ''];
+    }
+    //scroll to element method at index
+    scrollToNode(index, speed, offset = 0) {
+        if (this.parentScroll) {
+            if (index <= this.listDimensions.length - 1) {
+                let dimension = this.listDimensions[index];
+                this._scrollTo(dimension.start + offset, speed);
+            }
+            else {
+                this._scrollToIndex(index);
+            }
+        }
+    }
+    // //scroll to element method
+    // @Method()
+    // refresh() {
+    //   let missing = this.list.filter(item => this.list.indexOf(item) < 0);
+    //   console.log(missing);
+    //   let v = this.list.slice(this.first.rindex, this.last.rindex + this.bottomOffsetIndex);
+    //   this.update.emit(v);
+    //   //change detection
+    //   this.changed = [...this.changed, ''];
+    // }
+    _scrollToIndex(index) {
+        let perTick = 100;
+        setTimeout(() => {
+            this.parentScroll['scrollTop'] = this.parentScroll['scrollTop'] + perTick;
+            if (this.first && this.first.rindex === index)
+                return;
+            this._scrollToIndex(index);
+        }, 10);
+    }
+    _scrollTo(to, duration) {
+        if (duration <= 0)
+            return;
+        let difference = to - this.parentScroll['scrollTop'];
+        let perTick = difference / duration * 10;
+        setTimeout(() => {
+            this.parentScroll['scrollTop'] = this.parentScroll['scrollTop'] + perTick;
+            if (this.parentScroll['scrollTop'] === to)
+                return;
+            this._scrollTo(to, duration - 10);
+        }, 10);
     }
     //recalculation dimesions of list items
     _setDimensions() {

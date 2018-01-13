@@ -62,6 +62,7 @@ declare global {
       bottomOffset?: number;
       list?: Array<any>;
       selector?: string;
+      VirtualOffsetEnd?: number;
     }
   }
 }

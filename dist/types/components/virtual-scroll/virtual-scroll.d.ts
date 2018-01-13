@@ -3,6 +3,7 @@ export declare class VirualScrollWebComponent {
     list: Array<any>;
     selector: string;
     bottomOffset: number;
+    VirtualOffsetEnd: number;
     changed: string[];
     el: HTMLElement;
     private position;
@@ -11,7 +12,6 @@ export declare class VirualScrollWebComponent {
     private totalHeight;
     private first;
     private last;
-    private bottomOffsetIndex;
     private scrollEventSubscriber;
     private listDimensions;
     toBottom: EventEmitter<number>;
@@ -23,15 +23,18 @@ export declare class VirualScrollWebComponent {
     private contentOffsetTop;
     dataDidChangeHandler(): void;
     componentDidLoad(): void;
+    unwatch(): void;
     componentDidUnload(): void;
     componentWillLoad(): void;
     private init();
     private _setDefParams();
-    unwatch(): void;
     updateVirtual(update?: boolean): void;
     setInfinateOn(): void;
     setInfinateFinally(): void;
     clear(): void;
+    scrollToNode(index: number, speed: number, offset?: number): void;
+    private _scrollToIndex(index);
+    private _scrollTo(to, duration);
     private _setDimensions();
     private _addNewDimension(height, rindex);
     private _testDimensions();

@@ -1,4 +1,4 @@
-import { Component, Prop, State, Element, Listen } from '@stencil/core';
+import { Component, Prop, State, Element } from '@stencil/core';
 
 @Component({
   tag: 'fetch-helper',
@@ -50,7 +50,7 @@ export class FetchHelperWebComponent {
       const scrollTag: any = this.el.querySelector('virtual-scroll');
       scrollTag.list = this.list;
 
-      scrollTag.addEventListener('toBottom', (event) => {
+      scrollTag.addEventListener('toBottom', () => {
 
         this.lazyRequest();
       });
@@ -137,12 +137,22 @@ export class FetchHelperWebComponent {
     }, 2000)
   }
 
+  scrolling() {
+
+    const scrollTag: any = this.el.querySelector('virtual-scroll');
+    // scrollTag.list.splice(2, 1);
+    // scrollTag.refresh();
+    // this.changed = [...this.changed, ''];
+    scrollTag.scrollToNode(25, 1000, -50);
+  }
+
   render() {
 
     return ([
       <div onClick={this.reload.bind(this)} class="reload">reload</div>,
+      <div onClick={this.scrolling.bind(this)} class="scrolling">scrolling</div>,
       <div class="virtual-container">
-        <virtual-scroll bottom-offset="5" selector={this.selector}>
+        <virtual-scroll bottom-offset="5" virtual-offset-end="5" selector={this.selector}>
           <div slot="virtual" class="virtual-slot">
             {
               this.virtual.map((item, i) =>

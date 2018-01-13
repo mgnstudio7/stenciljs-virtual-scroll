@@ -4,8 +4,8 @@
     [
       "fetch-helper",
       [
-        "epjcf49k",
-        "lezc9ayl"
+        "t9uwjdky",
+        "f3hcuaru"
       ],
       1,
       [
@@ -32,11 +32,17 @@
     [
       "virtual-scroll",
       [
-        "3dsgnxr2",
-        "pzpgznqs"
+        "0oo2ayaa",
+        "mkqlcmsn"
       ],
       1,
       [
+        [
+          "VirtualOffsetEnd",
+          1,
+          1,
+          4
+        ],
         [
           "bottomOffset",
           1,
@@ -60,6 +66,10 @@
           1,
           1,
           1
+        ],
+        [
+          "scrollToNode",
+          6
         ],
         [
           "selector",

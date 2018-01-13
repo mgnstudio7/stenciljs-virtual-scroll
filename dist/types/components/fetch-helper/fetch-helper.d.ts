@@ -8,5 +8,6 @@ export declare class FetchHelperWebComponent {
     request(): void;
     lazyRequest(): void;
     reload(event: UIEvent): void;
+    scrolling(): void;
     render(): JSX.Element[];
 }

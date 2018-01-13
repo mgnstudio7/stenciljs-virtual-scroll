@@ -188,3 +188,16 @@ this method clear all need params of component, but not list
 ....
 ```
 
+**scrollToNode()** 
+
+set list item index, duration, offset
+
+```ts
+....
+    this.vscroll.nativeElement.scrollToNode(25, 1000, -50);
+....
+```
+
+**virtual-offset-end** 
+
+add nodes after last viewed node in viewport.

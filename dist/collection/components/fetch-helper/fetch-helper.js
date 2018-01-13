@@ -28,7 +28,7 @@ export class FetchHelperWebComponent {
             });
             const scrollTag = this.el.querySelector('virtual-scroll');
             scrollTag.list = this.list;
-            scrollTag.addEventListener('toBottom', (event) => {
+            scrollTag.addEventListener('toBottom', () => {
                 this.lazyRequest();
             });
             scrollTag.addEventListener('update', (event) => {
@@ -96,11 +96,19 @@ export class FetchHelperWebComponent {
             });
         }, 2000);
     }
+    scrolling() {
+        const scrollTag = this.el.querySelector('virtual-scroll');
+        // scrollTag.list.splice(2, 1);
+        // scrollTag.refresh();
+        // this.changed = [...this.changed, ''];
+        scrollTag.scrollToNode(25, 1000, -50);
+    }
     render() {
         return ([
             h("div", { onClick: this.reload.bind(this), class: "reload" }, "reload"),
+            h("div", { onClick: this.scrolling.bind(this), class: "scrolling" }, "scrolling"),
             h("div", { class: "virtual-container" },
-                h("virtual-scroll", { "bottom-offset": "5", selector: this.selector },
+                h("virtual-scroll", { "bottom-offset": "5", "virtual-offset-end": "5", selector: this.selector },
                     h("div", { slot: "virtual", class: "virtual-slot" }, this.virtual.map((item, i) => h("div", { class: "offer virtual-item", id: item.index },
                         h("div", { style: { backgroundImage: "url(" + item.thumbnailUrl + ")" }, class: "cover" }),
                         h("div", { class: "title" }, item.index),

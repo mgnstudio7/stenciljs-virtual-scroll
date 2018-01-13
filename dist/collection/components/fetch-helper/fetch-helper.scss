@@ -1,5 +1,4 @@
-.offer {
-}
+
 .cover {
     position: relative;
     width: 150px;
@@ -18,13 +17,20 @@
     padding-bottom: 67%;
 }
 
-.reload {
+.reload, .scrolling {
     position: absolute;
     top: 0;
-    left: 0;
     margin: 10px;
     padding: 10px;
     background: #ccc;
     cursor: pointer;
     z-index: 1;
+}
+
+.scrolling {
+    right: 0;
+}
+
+.reload {
+    left: 0;
 }

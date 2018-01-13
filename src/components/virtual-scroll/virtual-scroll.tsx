@@ -9,7 +9,7 @@ and it must scrolled with scroll component.
 
 */
 
-import { Component, Prop, State, Element, PropDidChange, Event, EventEmitter, Method } from '@stencil/core';
+import { Component, Prop, State, Element, PropDidChange, PropWillChange, Event, EventEmitter, Method } from '@stencil/core';
 
 @Component({
   tag: 'virtual-scroll',
@@ -25,6 +25,9 @@ export class VirualScrollWebComponent {
 
   //offset bottom event
   @Prop() bottomOffset: number = 0;
+  
+  //reserve of the bootom rows
+  @Prop() VirtualOffsetEnd = 3;
 
   //change detection strategy
   @State() changed: string[] = [];
@@ -50,9 +53,6 @@ export class VirualScrollWebComponent {
   //first and last viewed rows
   private first: any;
   private last: any;
-
-  //reserve of the bootom rows
-  private bottomOffsetIndex = 3;
 
   //scroll event listener
   private scrollEventSubscriber: any;
@@ -80,6 +80,7 @@ export class VirualScrollWebComponent {
 
   //offset of contentpage
   private contentOffsetTop: number = 0;
+  
 
   //change list event
   @PropDidChange('list')
@@ -104,6 +105,12 @@ export class VirualScrollWebComponent {
     }
 
     this.init();
+  }
+
+  //dispatch listener of scroll on unload
+  unwatch() {
+    if (this.parentScroll)
+      this.parentScroll.removeEventListener('click');
   }
 
   //life cicle methods
@@ -131,7 +138,6 @@ export class VirualScrollWebComponent {
 
       this.updateVirtual();
     });
-
   }
 
   private _setDefParams() {
@@ -141,13 +147,6 @@ export class VirualScrollWebComponent {
     this.listDimensions = [];
     this.totalHeight = 0;
     this.position = 0;
-  }
-
-  //dispatch listener of scroll on unload
-  unwatch() {
-    if (this.scrollEventSubscriber) {
-      this.scrollEventSubscriber.unsubscribe();
-    }
   }
 
   //update virtual list items
@@ -168,7 +167,7 @@ export class VirualScrollWebComponent {
     //virtual list set ...
     if (this.first && this.last) {
       this.topPadding = this.first.start;
-      let v = this.list.slice(this.first.rindex, this.last.rindex + this.bottomOffsetIndex);
+      let v = this.list.slice(this.first.rindex, this.last.rindex + this.VirtualOffsetEnd);
 
       if ((findex != this.first.rindex || lindex != this.last.rindex) || update) {
 
@@ -216,6 +215,55 @@ export class VirualScrollWebComponent {
     this.list = [];
     this._setDefParams();
     this.changed = [...this.changed, ''];
+  }
+
+
+  //scroll to element method at index
+  @Method()
+  scrollToNode(index: number, speed: number, offset: number = 0) {
+    if (this.parentScroll) {
+      if (index <= this.listDimensions.length - 1) {
+        let dimension = this.listDimensions[index];
+        this._scrollTo(dimension.start + offset, speed);
+      }
+      else {
+        this._scrollToIndex(index);
+      }
+    }
+  }
+
+  // //scroll to element method
+  // @Method()
+  // refresh() {
+
+  //   let missing = this.list.filter(item => this.list.indexOf(item) < 0);
+  //   console.log(missing);
+
+  //   let v = this.list.slice(this.first.rindex, this.last.rindex + this.bottomOffsetIndex);
+  //   this.update.emit(v);
+  //   //change detection
+  //   this.changed = [...this.changed, ''];
+  // }
+
+  private _scrollToIndex(index) {
+    let perTick = 100;
+    setTimeout(() => {
+      this.parentScroll['scrollTop'] = this.parentScroll['scrollTop'] + perTick;
+      if (this.first && this.first.rindex === index) return;
+      this._scrollToIndex(index);
+    }, 10);
+  }
+
+  private _scrollTo(to, duration) {
+    if (duration <= 0) return;
+    let difference = to - this.parentScroll['scrollTop'];
+    let perTick = difference / duration * 10;
+
+    setTimeout(() => {
+      this.parentScroll['scrollTop'] = this.parentScroll['scrollTop'] + perTick;
+      if (this.parentScroll['scrollTop'] === to) return;
+      this._scrollTo(to, duration - 10);
+    }, 10);
   }
 
   //recalculation dimesions of list items
