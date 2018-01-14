@@ -55,7 +55,7 @@ During the build, the components need to be copied to the build output directory
 "assets": [
         "assets",
         "favicon.ico",
-        { "glob": "**/*", "input": "../node_modules/stenciljs-virtual-scroll/stenciljs-virtual-scroll", "output": "./stenciljs-virtual-scroll" }
+        { "glob": "**/*", "input": "../node_modules/stenciljs-virtual-scroll/dist/stenciljs-virtual-scroll", "output": "./stenciljs-virtual-scroll" }
       ]
 
 ```
