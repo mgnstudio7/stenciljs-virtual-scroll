@@ -2,9 +2,11 @@
     overflow-y: auto;
     height: 100%;
 }
+
 .vscroll.external {
     overflow-y: hidden;
-} 
+}
+
 .vscroll {
     overflow-x: hidden;
     position: relative;
@@ -26,9 +28,11 @@
 
 .infinate-finally {
     div[slot='loader'] {
-        display: none;
+        visibility: hidden;
     }
 }
 
 virual-scroll {
+    height: 100%;
+    display: block;
 }

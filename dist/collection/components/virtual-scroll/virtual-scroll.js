@@ -21,28 +21,28 @@ export class VirualScrollWebComponent {
         this.virtualRatio = 3;
         //change detection strategy
         this.changed = [];
-        //position of scroll
+        //position of scroll element
         this.position = 0;
-        //virtual items list
-        //private virtual: Array<any> = [];
-        //full height of component
-        this.totalHeight = 0;
-        //list items dimensions
-        this.listDimensions = [];
+        this.parentScrollHeight = 0;
+        //offset of scroll
+        this.vscrollOffsetTop = 0;
+        this.contentOffsetTop = 0;
+        /*EVENTS^^^*/
+        /*LAZYLOAD*/
         //state to enable bottom infinate event
         this.infinateOn = true;
         //state to common disable bottom infinate event
         this.infinateFinally = false;
+        /*LAZYLOAD^^^*/
+        //full height of component
+        this.totalHeight = 0;
+        //list items dimensions
+        this.listDimensions = [];
         //bool state to detect init render
         this.initRender = false;
-        //offset of scroll
-        this.vscrollOffsetTop = 0;
-        //offset of contentpage
-        this.contentOffsetTop = 0;
     }
     //change list event
     dataDidChangeHandler() {
-        console.log('this.list', this.list);
         this.list.map((m, i) => {
             if (!m.index) {
                 m.index = i;
@@ -54,13 +54,26 @@ export class VirualScrollWebComponent {
     }
     //life cicle methods
     componentDidLoad() {
+        this._setDefParams();
+        //get scroll element
         if (this.selector.length > 0) {
             this.parentScroll = document.querySelector('.' + this.selector);
         }
         else {
             this.parentScroll = this.el.querySelector('.vscroll');
         }
-        this.init();
+        //get scroll element height
+        this.parentScrollHeight = this.parentScroll['offsetHeight'];
+        //get scroll element offset top
+        this.contentOffsetTop = (this.parentScroll) ? this.parentScroll['offsetTop'] : 0;
+        //get content element 
+        this.contentEl = this.el.querySelector('.vscroll-content');
+        let vscroll = this.el.querySelector('.vscroll');
+        this.vscrollOffsetTop = (vscroll) ? vscroll['offsetTop'] : 0;
+        this.parentScroll.addEventListener('scroll', (e) => {
+            this.position = this.parentScroll['scrollTop'] - this.vscrollOffsetTop;
+            this.updateVirtual();
+        }, false);
     }
     //dispatch listener of scroll on unload
     unwatch() {
@@ -68,29 +81,16 @@ export class VirualScrollWebComponent {
             this.parentScroll.removeEventListener('scroll', this._listener);
         }
     }
+    _listener() {
+        this.position = this.parentScroll['scrollTop'] - this.vscrollOffsetTop;
+        this.updateVirtual();
+    }
     //life cicle methods
     componentDidUnload() {
         this.unwatch();
     }
     //life cicle methods
     componentWillLoad() {
-    }
-    //init/reinit
-    init() {
-        this._setDefParams();
-        let content = this.parentScroll;
-        this.contentOffsetTop = (content) ? content['offsetTop'] : 0;
-        let vscroll = this.el.querySelector('.vscroll');
-        this.vscrollOffsetTop = (vscroll) ? vscroll['offsetTop'] : 0;
-        this.contentEl = this.el.querySelector('.vscroll-content');
-        this.parentScroll.addEventListener('scroll', (e) => {
-            this.position = this.parentScroll['scrollTop'] - this.vscrollOffsetTop;
-            this.updateVirtual();
-        }, false);
-    }
-    _listener() {
-        this.position = this.parentScroll['scrollTop'] - this.vscrollOffsetTop;
-        this.updateVirtual();
     }
     _setDefParams() {
         this.first = null;
@@ -113,17 +113,16 @@ export class VirualScrollWebComponent {
         //if first/last exist, set topPadding(content transformY).
         //virtual list set ...
         if (this.first && this.last) {
-            let l = (this.last.rindex + this.virtualRatio) >= this.list.length ? this.list.length : this.last.rindex + this.virtualRatio;
-            let f = (this.first.rindex - this.virtualRatio) < 0 ? 0 : this.first.rindex - this.virtualRatio;
-            // if (l == this.list.length) {
-            //   f = (findex - this.virtualRatio) < 0 ? 0 : findex - this.virtualRatio;
-            //   this.first = this.listDimensions[findex];
-            // }
-            let v = this.list.slice(f, l);
-            //console.log('v1', v)
+            let lastOffsetIndex = (this.last.rindex + this.virtualRatio) >= this.list.length ? this.list.length : this.last.rindex + this.virtualRatio;
+            let firstOffsetIndex = (this.first.rindex - this.virtualRatio) < 0 ? 0 : this.first.rindex - this.virtualRatio;
+            if (lastOffsetIndex == this.list.length && (this.totalHeight - this.position - this.parentScrollHeight) < 0) {
+                firstOffsetIndex = (findex - this.virtualRatio) < 0 ? 0 : findex - this.virtualRatio;
+                this.first = this.listDimensions[findex];
+            }
+            let v = this.list.slice(firstOffsetIndex, lastOffsetIndex);
             if ((findex != this.first.rindex || lindex != this.last.rindex) || update) {
                 requestAnimationFrame(() => {
-                    let d = this.listDimensions[f];
+                    let d = this.listDimensions[firstOffsetIndex];
                     if (d) {
                         this.contentEl.style.transform = 'translateY(' + d.start + 'px)';
                         this.contentEl.style.webkitTransform = 'translateY(' + d.start + 'px)';

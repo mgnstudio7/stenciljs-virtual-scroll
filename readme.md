@@ -6,7 +6,7 @@ This is a project for building a standalone Virtual Scroll Web Component using S
 Project contain collection of two components:
 
 **1.** virtual-scroll (VirtualScrollWebComponent).
-This component render subset of elements, required to fill the viewport with **DIFFERENT** height
+This component render subset of elements with **DIFFERENT** height, required to fill the viewport
 
 **2.** fetch-helper (FetchHelperWebComponent)
 This component show you, how to use virtual scroll without framework.

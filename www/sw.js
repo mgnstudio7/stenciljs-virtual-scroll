@@ -20,15 +20,19 @@ importScripts('workbox-sw.prod.v2.1.2.js');
 const fileManifest = [
   {
     "url": "build/stenciljs-virtual-scroll.js",
-    "revision": "2705c2ba4167239c2ef093ee575c1fab"
+    "revision": "d922c654224f0c4cefacf37be5ef3cd1"
+  },
+  {
+    "url": "build/stenciljs-virtual-scroll/b2jykg6u.js",
+    "revision": "74dc52f8ed46371183643b74565e97ae"
   },
   {
     "url": "build/stenciljs-virtual-scroll/haz9flny.js",
     "revision": "5a093fe908cd1bb9a6cc2ad78c473ae4"
   },
   {
-    "url": "build/stenciljs-virtual-scroll/lzw54bta.js",
-    "revision": "5252de06193bced53297f94634efe58c"
+    "url": "build/stenciljs-virtual-scroll/nmznwxys.js",
+    "revision": "a123168f27dcb724d531e677b6de926f"
   },
   {
     "url": "build/stenciljs-virtual-scroll/stenciljs-virtual-scroll.bjqpsrol.js",
@@ -36,7 +40,7 @@ const fileManifest = [
   },
   {
     "url": "build/stenciljs-virtual-scroll/stenciljs-virtual-scroll.registry.json",
-    "revision": "5dcd27e03cc29c81c916debc207f7de9"
+    "revision": "4824d88b271ace1190507feca90ffc94"
   },
   {
     "url": "build/stenciljs-virtual-scroll/stenciljs-virtual-scroll.sacmdr8j.js",
@@ -49,10 +53,6 @@ const fileManifest = [
   {
     "url": "build/stenciljs-virtual-scroll/vxuarj8x.js",
     "revision": "e96660aef668f2e23d3fe12b99c86998"
-  },
-  {
-    "url": "build/stenciljs-virtual-scroll/w14p31ue.js",
-    "revision": "38df7d7a9b0638574e2a0969c8fe5d26"
   },
   {
     "url": "index.html",

@@ -13,7 +13,10 @@ import { Component, Prop, State, Element, PropDidChange, PropWillChange, Event, 
 
 @Component({
   tag: 'virtual-scroll',
-  styleUrl: 'virtual-scroll.scss'
+  styleUrl: 'virtual-scroll.scss',
+  host: {
+    style: 'font-size:20px;'
+  }
 })
 export class VirualScrollWebComponent {
 
@@ -32,19 +35,32 @@ export class VirualScrollWebComponent {
   //change detection strategy
   @State() changed: string[] = [];
 
+  /*ROOT DIMENSIONS*/
   //root html
   @Element() el: HTMLElement;
-
+  //content element
   private contentEl: HTMLElement;
-
-  //position of scroll
+  //position of scroll element
   private position: number = 0;
-
   //scrolled html element 
   private parentScroll: any;
+  private parentScrollHeight: number = 0;
+  //offset of scroll
+  private vscrollOffsetTop: number = 0;
+  private contentOffsetTop: number = 0;
+  /*ROOT DIMENSIONS^^^*/
 
-  //virtual items list
-  //private virtual: Array<any> = [];
+  /*EVENTS*/
+  @Event() toBottom: EventEmitter<number>;
+  @Event() update: EventEmitter<Array<any>>;
+  /*EVENTS^^^*/
+
+  /*LAZYLOAD*/
+  //state to enable bottom infinate event
+  private infinateOn: boolean = true;
+  //state to common disable bottom infinate event
+  private infinateFinally: boolean = false;
+  /*LAZYLOAD^^^*/
 
   //full height of component
   private totalHeight: number = 0;
@@ -56,32 +72,12 @@ export class VirualScrollWebComponent {
   //list items dimensions
   private listDimensions: Array<any> = [];
 
-  //bottom event
-  @Event() toBottom: EventEmitter<number>;
-
-  //update event
-  @Event() update: EventEmitter<Array<any>>;
-
-  //state to enable bottom infinate event
-  private infinateOn: boolean = true;
-
-  //state to common disable bottom infinate event
-  private infinateFinally: boolean = false;
-
   //bool state to detect init render
   private initRender: boolean = false;
-
-  //offset of scroll
-  private vscrollOffsetTop: number = 0;
-
-  //offset of contentpage
-  private contentOffsetTop: number = 0;
-
 
   //change list event
   @PropDidChange('list')
   dataDidChangeHandler() {
-    console.log('this.list', this.list)
     this.list.map((m, i) => {
       if (!m.index) {
         m.index = i;
@@ -94,6 +90,10 @@ export class VirualScrollWebComponent {
 
   //life cicle methods
   componentDidLoad() {
+    
+    this._setDefParams();
+
+    //get scroll element
     if (this.selector.length > 0) {
       this.parentScroll = document.querySelector('.' + this.selector);
     }
@@ -101,7 +101,23 @@ export class VirualScrollWebComponent {
       this.parentScroll = this.el.querySelector('.vscroll');
     }
 
-    this.init();
+    //get scroll element height
+    this.parentScrollHeight = this.parentScroll['offsetHeight'];
+    
+    //get scroll element offset top
+    this.contentOffsetTop = (this.parentScroll) ? this.parentScroll['offsetTop'] : 0;
+    
+    //get content element 
+    this.contentEl = this.el.querySelector('.vscroll-content');
+    
+    let vscroll = this.el.querySelector('.vscroll');
+    this.vscrollOffsetTop = (vscroll) ? vscroll['offsetTop'] : 0;
+    
+    this.parentScroll.addEventListener('scroll', (e) => {
+      this.position = this.parentScroll['scrollTop'] - this.vscrollOffsetTop;
+      this.updateVirtual();
+    }, false);
+
   }
 
   //dispatch listener of scroll on unload
@@ -109,6 +125,10 @@ export class VirualScrollWebComponent {
     if (this.parentScroll) {
       this.parentScroll.removeEventListener('scroll', this._listener);
     }
+  }
+  private _listener() {
+    this.position = this.parentScroll['scrollTop'] - this.vscrollOffsetTop;
+    this.updateVirtual();
   }
 
   //life cicle methods
@@ -120,29 +140,6 @@ export class VirualScrollWebComponent {
   componentWillLoad() {
   }
 
-  //init/reinit
-  private init() {
-
-    this._setDefParams();
-
-    let content = this.parentScroll;
-    this.contentOffsetTop = (content) ? content['offsetTop'] : 0;
-
-    let vscroll = this.el.querySelector('.vscroll');
-    this.vscrollOffsetTop = (vscroll) ? vscroll['offsetTop'] : 0;
-
-    this.contentEl = this.el.querySelector('.vscroll-content');
-
-    this.parentScroll.addEventListener('scroll', (e) => {
-      this.position = this.parentScroll['scrollTop'] - this.vscrollOffsetTop;
-      this.updateVirtual();
-    }, false);
-  }
-
-  private _listener() {
-    this.position = this.parentScroll['scrollTop'] - this.vscrollOffsetTop;
-    this.updateVirtual();
-  }
 
   private _setDefParams() {
     this.first = null;
@@ -170,22 +167,19 @@ export class VirualScrollWebComponent {
     //virtual list set ...
     if (this.first && this.last) {
 
-      let l = (this.last.rindex + this.virtualRatio) >= this.list.length ? this.list.length : this.last.rindex + this.virtualRatio
+      let lastOffsetIndex = (this.last.rindex + this.virtualRatio) >= this.list.length ? this.list.length : this.last.rindex + this.virtualRatio
 
-      let f = (this.first.rindex - this.virtualRatio) < 0 ? 0 : this.first.rindex - this.virtualRatio;
-      // if (l == this.list.length) {
-      //   f = (findex - this.virtualRatio) < 0 ? 0 : findex - this.virtualRatio;
-      //   this.first = this.listDimensions[findex];
-      // }
-      let v = this.list.slice(f, l);
-      //console.log('v1', v)
+      let firstOffsetIndex = (this.first.rindex - this.virtualRatio) < 0 ? 0 : this.first.rindex - this.virtualRatio;
+      if (lastOffsetIndex == this.list.length && (this.totalHeight - this.position - this.parentScrollHeight) < 0) {
+        firstOffsetIndex = (findex - this.virtualRatio) < 0 ? 0 : findex - this.virtualRatio;
+        this.first = this.listDimensions[findex];
+      }
+      let v = this.list.slice(firstOffsetIndex, lastOffsetIndex);
 
       if ((findex != this.first.rindex || lindex != this.last.rindex) || update) {
 
-
         requestAnimationFrame(() => {
-
-          let d = this.listDimensions[f];
+          let d = this.listDimensions[firstOffsetIndex];
           if (d) {
             this.contentEl.style.transform = 'translateY(' + d.start + 'px)';
             this.contentEl.style.webkitTransform = 'translateY(' + d.start + 'px)';
@@ -197,7 +191,6 @@ export class VirualScrollWebComponent {
             //change detection
             this.changed = [...this.changed, ''];
           }
-  
         })
 
         //change detection
