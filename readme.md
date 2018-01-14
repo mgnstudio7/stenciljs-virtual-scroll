@@ -47,6 +47,8 @@ export class AppModule { }
 
 **Step 4.** Copying the Components
 
+For Angular2+
+
 During the build, the components need to be copied to the build output directory. The easiest way to do this is to modify include the collection in the assets array of the .angular-cli.json file.
 
 ```json
@@ -57,6 +59,65 @@ During the build, the components need to be copied to the build output directory
       ]
 
 ```
+
+For Ionic2+
+
+You must use app-script to copy web component files in www directory
+
+1. Add in package.json 
+```json
+"config": {
+    "ionic_copy": "./config/copy.config.js"
+  }
+```
+
+2. Create config/copy.config.js and put in
+
+```ts
+// this is a custom dictionary to make it easy to extend/override
+// provide a name for an entry, it can be anything such as 'copyAssets' or 'copyFonts'
+// then provide an object with a `src` array of globs and a `dest` string
+module.exports = {
+    copyAssets: {
+      src: ['{{SRC}}/assets/**/*'],
+      dest: '{{WWW}}/assets'
+    },
+    copyIndexContent: {
+      src: ['{{SRC}}/index.html', '{{SRC}}/manifest.json', '{{SRC}}/service-worker.js'],
+      dest: '{{WWW}}'
+    },
+    copyFonts: {
+      src: ['{{ROOT}}/node_modules/ionicons/dist/fonts/**/*', '{{ROOT}}/node_modules/ionic-angular/fonts/**/*'],
+      dest: '{{WWW}}/assets/fonts'
+    },
+    copyPolyfills: {
+      src: [`{{ROOT}}/node_modules/ionic-angular/polyfills/${process.env.IONIC_POLYFILL_FILE_NAME}`],
+      dest: '{{BUILD}}'
+    },
+    copySwToolbox: {
+      src: ['{{ROOT}}/node_modules/sw-toolbox/sw-toolbox.js'],
+      dest: '{{BUILD}}'
+    },
+    copyVirtualScrollCore: {
+      src: ['{{ROOT}}/node_modules/stenciljs-virtual-scroll/dist/stenciljs-virtual-scroll/**/*'],
+      dest: '{{BUILD}}/stenciljs-virtual-scroll'
+    },
+    copyVirtualScroll: {
+      src: ['{{ROOT}}/node_modules/stenciljs-virtual-scroll/dist/stenciljs-virtual-scroll.js'],
+      dest: '{{BUILD}}'
+    }
+  }
+```
+
+before copyVirtualScrollCore property set standart app-script copy.config properties (if you are modify self config or my version is outdated, get only last 2 properties and put in your)
+
+3.  And register component in app 
+
+```html
+  <script src="./build/stenciljs-virtual-scroll.js"></script>
+```
+
+4. rebuild
 
 # Usage
 
