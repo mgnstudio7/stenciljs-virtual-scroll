@@ -21,7 +21,7 @@ export declare class VirualScrollWebComponent {
     private last;
     private listDimensions;
     private initRender;
-    dataDidChangeHandler(): void;
+    dataDidChangeHandler(newValue: any): void;
     componentDidLoad(): void;
     unwatch(): void;
     private _listener();

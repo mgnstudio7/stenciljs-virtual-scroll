@@ -116,4 +116,7 @@ export class FetchHelperWebComponent {
                     h("div", { slot: "loader" }, "loading...")))
         ]);
     }
+    static get is() { return "fetch-helper"; }
+    static get properties() { return { "changed": { "state": true }, "el": { "elementRef": true }, "list": { "state": true }, "selector": { "type": String } }; }
+    static get style() { return "/**style-placeholder:fetch-helper:**/"; }
 }

@@ -3,7 +3,7 @@ logic of this component base on
 ...
 */
 
-import { Component, Prop, State, Element, PropDidChange, PropWillChange, Event, EventEmitter, Method } from '@stencil/core';
+import { Component, Prop, State, Element, Watch, Event, EventEmitter, Method } from '@stencil/core';
 
 @Component({
   tag: 'virtual-scroll',
@@ -66,9 +66,9 @@ export class VirualScrollWebComponent {
   //bool state to detect init render
   private initRender: boolean = false;
 
-  //change list event
-  @PropDidChange('list')
-  dataDidChangeHandler() {
+  //change list event2
+  @Watch('list')
+  dataDidChangeHandler(newValue) {
     this.list.map((m, i) => {
       if (!m.index) {
         m.index = i;
@@ -161,10 +161,10 @@ export class VirualScrollWebComponent {
       let lastOffsetIndex = (this.last.rindex + this.virtualRatio) >= this.list.length ? this.list.length : this.last.rindex + this.virtualRatio
 
       let firstOffsetIndex = (this.first.rindex - this.virtualRatio) < 0 ? 0 : this.first.rindex - this.virtualRatio;
-      if (lastOffsetIndex == this.list.length && (this.totalHeight - this.position - this.parentScrollHeight) < 0) {
-        firstOffsetIndex = (findex - this.virtualRatio) < 0 ? 0 : findex - this.virtualRatio;
-        this.first = this.listDimensions[findex];
-      }
+      // if (lastOffsetIndex == this.list.length && (this.totalHeight - this.position - this.parentScrollHeight) < 0) {
+      //   firstOffsetIndex = (findex - this.virtualRatio) < 0 ? 0 : findex - this.virtualRatio;
+      //   this.first = this.listDimensions[findex];
+      // }
       let v = this.list.slice(firstOffsetIndex, lastOffsetIndex);
 
       if ((findex != this.first.rindex || lindex != this.last.rindex) || update) {

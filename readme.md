@@ -55,7 +55,7 @@ During the build, the components need to be copied to the build output directory
 "assets": [
         "assets",
         "favicon.ico",
-        { "glob": "**/*", "input": "../node_modules/stenciljs-virtual-scroll/dist/stenciljs-virtual-scroll", "output": "./stenciljs-virtual-scroll" }
+        { "glob": "**/*", "input": "../node_modules/stenciljs-virtual-scroll/dist/virtualscroll", "output": "./virtualscroll" }
       ]
 
 ```
@@ -99,11 +99,11 @@ module.exports = {
       dest: '{{BUILD}}'
     },
     copyVirtualScrollCore: {
-      src: ['{{ROOT}}/node_modules/stenciljs-virtual-scroll/dist/stenciljs-virtual-scroll/**/*'],
-      dest: '{{BUILD}}/stenciljs-virtual-scroll'
+      src: ['{{ROOT}}/node_modules/stenciljs-virtual-scroll/dist/virtualscroll/**/*'],
+      dest: '{{BUILD}}/virtualscroll'
     },
     copyVirtualScroll: {
-      src: ['{{ROOT}}/node_modules/stenciljs-virtual-scroll/dist/stenciljs-virtual-scroll.js'],
+      src: ['{{ROOT}}/node_modules/stenciljs-virtual-scroll/dist/virtualscroll.js'],
       dest: '{{BUILD}}'
     }
   }
@@ -114,7 +114,7 @@ before copyVirtualScrollCore property set standart app-script copy.config proper
 3.  And register component in app 
 
 ```html
-  <script src="./build/stenciljs-virtual-scroll.js"></script>
+  <script src="./build/virtualscroll.js"></script>
 ```
 
 4. rebuild

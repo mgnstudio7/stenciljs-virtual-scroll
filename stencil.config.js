@@ -1,5 +1,5 @@
 exports.config = {
-  namespace: 'stenciljs-virtual-scroll',
+  namespace: 'virtualscroll',
   generateDistribution: true,
   bundles: [
     {

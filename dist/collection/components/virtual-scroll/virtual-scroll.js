@@ -1,12 +1,6 @@
 /*
 logic of this component base on
-
-Component can work in two "scroll states"
-1. Inner scroll container. scroll event listen inner html element 'vscroll'
-2. External scroll component. scroll event listen on inner html element, he most set in component attributes
-External scroll container must heip if ypu are using some additional content on page,
-and it must scrolled with scroll component.
-
+...
 */
 import { EventEmitter } from '@stencil/core';
 export class VirualScrollWebComponent {
@@ -41,8 +35,8 @@ export class VirualScrollWebComponent {
         //bool state to detect init render
         this.initRender = false;
     }
-    //change list event
-    dataDidChangeHandler() {
+    //change list event2
+    dataDidChangeHandler(newValue) {
         this.list.map((m, i) => {
             if (!m.index) {
                 m.index = i;
@@ -115,10 +109,10 @@ export class VirualScrollWebComponent {
         if (this.first && this.last) {
             let lastOffsetIndex = (this.last.rindex + this.virtualRatio) >= this.list.length ? this.list.length : this.last.rindex + this.virtualRatio;
             let firstOffsetIndex = (this.first.rindex - this.virtualRatio) < 0 ? 0 : this.first.rindex - this.virtualRatio;
-            if (lastOffsetIndex == this.list.length && (this.totalHeight - this.position - this.parentScrollHeight) < 0) {
-                firstOffsetIndex = (findex - this.virtualRatio) < 0 ? 0 : findex - this.virtualRatio;
-                this.first = this.listDimensions[findex];
-            }
+            // if (lastOffsetIndex == this.list.length && (this.totalHeight - this.position - this.parentScrollHeight) < 0) {
+            //   firstOffsetIndex = (findex - this.virtualRatio) < 0 ? 0 : findex - this.virtualRatio;
+            //   this.first = this.listDimensions[findex];
+            // }
             let v = this.list.slice(firstOffsetIndex, lastOffsetIndex);
             if ((findex != this.first.rindex || lindex != this.last.rindex) || update) {
                 requestAnimationFrame(() => {
@@ -280,4 +274,8 @@ export class VirualScrollWebComponent {
                 h("slot", { name: "virtual" })),
             h("slot", { name: "loader" })));
     }
+    static get is() { return "virtual-scroll"; }
+    static get properties() { return { "bottomOffset": { "type": Number }, "changed": { "state": true }, "clear": { "method": true }, "el": { "elementRef": true }, "list": { "type": "Any", "watchCallbacks": ["dataDidChangeHandler"] }, "scrollToNode": { "method": true }, "selector": { "type": String }, "setInfinateFinally": { "method": true }, "setInfinateOn": { "method": true }, "virtualRatio": { "type": Number } }; }
+    static get events() { return [{ "name": "toBottom", "method": "toBottom", "bubbles": true, "cancelable": true, "composed": true }, { "name": "update", "method": "update", "bubbles": true, "cancelable": true, "composed": true }]; }
+    static get style() { return "/**style-placeholder:virtual-scroll:**/"; }
 }

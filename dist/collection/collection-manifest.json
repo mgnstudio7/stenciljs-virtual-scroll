@@ -14,7 +14,7 @@
       "props": [
         {
           "name": "selector",
-          "type": "string"
+          "type": "String"
         }
       ],
       "states": [
@@ -43,25 +43,22 @@
       "props": [
         {
           "name": "bottomOffset",
-          "type": "number"
+          "type": "Number"
         },
         {
           "name": "list",
-          "type": "any"
+          "type": "Any",
+          "watch": [
+            "dataDidChangeHandler"
+          ]
         },
         {
           "name": "selector",
-          "type": "string"
+          "type": "String"
         },
         {
           "name": "virtualRatio",
-          "type": "number"
-        }
-      ],
-      "propsDidChange": [
-        {
-          "name": "list",
-          "method": "dataDidChangeHandler"
+          "type": "Number"
         }
       ],
       "states": [
@@ -93,8 +90,7 @@
         {
           "event": "update"
         }
-      ],
-      "slot": "hasNamedSlots"
+      ]
     }
   ],
   "bundles": [
@@ -111,7 +107,7 @@
   ],
   "compiler": {
     "name": "@stencil/core",
-    "version": "0.1.1-0",
+    "version": "0.1.4",
     "typescriptVersion": "2.6.2"
   }
 }

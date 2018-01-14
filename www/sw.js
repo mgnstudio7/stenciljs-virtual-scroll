@@ -1,67 +1,40 @@
-importScripts('workbox-sw.prod.v2.1.2.js');
+/**
+ * Welcome to your Workbox-powered service worker!
+ *
+ * You'll need to register this file in your web app and you should
+ * disable HTTP caching for this file too.
+ * See https://goo.gl/nhQhGp
+ *
+ * The rest of the code is auto-generated. Please don't update this file
+ * directly; instead, make changes to your Workbox build configuration
+ * and re-run your build process.
+ * See https://goo.gl/YYPcyY
+ */
+
+
+importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.0.0-alpha.3/workbox-sw.js");
+
+
+
+
+
+
+
+
 
 /**
- * DO NOT EDIT THE FILE MANIFEST ENTRY
- *
- * The method precache() does the following:
- * 1. Cache URLs in the manifest to a local cache.
- * 2. When a network request is made for any of these URLs the response
- *    will ALWAYS comes from the cache, NEVER the network.
- * 3. When the service worker changes ONLY assets with a revision change are
- *    updated, old cache entries are left as is.
- *
- * By changing the file manifest manually, your users may end up not receiving
- * new versions of files because the revision hasn't changed.
- *
- * Please use workbox-build or some other tool / approach to generate the file
- * manifest which accounts for changes to local files and update the revision
- * accordingly.
+ * The workboxSW.precacheAndRoute() method efficiently caches and responds to
+ * requests for URLs in the manifest.
+ * See https://goo.gl/S9QRab
  */
-const fileManifest = [
-  {
-    "url": "build/stenciljs-virtual-scroll.js",
-    "revision": "5111182a51badb3bd31660a16aaebe7e"
-  },
-  {
-    "url": "build/stenciljs-virtual-scroll/0driuim6.js",
-    "revision": "4d83157a182810695ce9ff32088ae702"
-  },
-  {
-    "url": "build/stenciljs-virtual-scroll/haz9flny.js",
-    "revision": "5a093fe908cd1bb9a6cc2ad78c473ae4"
-  },
-  {
-    "url": "build/stenciljs-virtual-scroll/mgwt6eha.js",
-    "revision": "b21bddda8e47e3cf1c1f516d3fcc027d"
-  },
-  {
-    "url": "build/stenciljs-virtual-scroll/stenciljs-virtual-scroll.bjqpsrol.js",
-    "revision": "0854c41f57b98a075e8d414c86620802"
-  },
-  {
-    "url": "build/stenciljs-virtual-scroll/stenciljs-virtual-scroll.registry.json",
-    "revision": "50c1110713eb7cdbf217620335133251"
-  },
-  {
-    "url": "build/stenciljs-virtual-scroll/stenciljs-virtual-scroll.sacmdr8j.js",
-    "revision": "5f971ec91da4848c1a184d890fa46b43"
-  },
-  {
-    "url": "build/stenciljs-virtual-scroll/stenciljs-virtual-scroll.x1oygtuo.js",
-    "revision": "da6395206d70089b4de616a3ed5fe3b6"
-  },
-  {
-    "url": "build/stenciljs-virtual-scroll/vxuarj8x.js",
-    "revision": "e96660aef668f2e23d3fe12b99c86998"
-  },
+self.__precacheManifest = [
   {
     "url": "index.html",
-    "revision": "a0a433b083e00ce7e768c7f307d2c8fa"
+    "revision": "511fd6501eba394b062ea15729dcde54"
   }
-];
+].concat(self.__precacheManifest || []);
 
-const workboxSW = new self.WorkboxSW({
-  "skipWaiting": true,
-  "clientsClaim": true
-});
-workboxSW.precache(fileManifest);
+if (Array.isArray(self.__precacheManifest)) {
+  workbox.precaching.suppressWarnings();
+  workbox.precaching.precacheAndRoute(self.__precacheManifest, {});
+}
