@@ -86,7 +86,7 @@ export class VirualScrollWebComponent {
 
     //get scroll element
     if (this.selector.length > 0) {
-      this.parentScroll = document.querySelector('.' + this.selector);
+      this.parentScroll = this.el.closest('.' + this.selector);
     }
     else {
       this.parentScroll = this.el.querySelector('.vscroll');
