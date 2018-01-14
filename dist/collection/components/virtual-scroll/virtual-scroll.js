@@ -92,6 +92,8 @@ export class VirualScrollWebComponent {
         this.listDimensions = [];
         this.totalHeight = 0;
         this.position = 0;
+        this.infinateOn = true;
+        this.infinateFinally = false;
     }
     //update virtual list items
     updateVirtual(update = false) {
