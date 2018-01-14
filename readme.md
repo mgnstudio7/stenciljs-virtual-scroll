@@ -261,4 +261,4 @@ set list item index, duration, offset
 
 **virtual-ratio** 
 
-add nodes after last and before first viewed node in viewport.
+add nodes after last and before first viewed nodes in viewport.
