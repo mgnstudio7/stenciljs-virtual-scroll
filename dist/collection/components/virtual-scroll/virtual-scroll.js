@@ -42,6 +42,7 @@ export class VirualScrollWebComponent {
     }
     //change list event
     dataDidChangeHandler() {
+        console.log('this.list', this.list);
         this.list.map((m, i) => {
             if (!m.index) {
                 m.index = i;
@@ -119,6 +120,7 @@ export class VirualScrollWebComponent {
             //   this.first = this.listDimensions[findex];
             // }
             let v = this.list.slice(f, l);
+            //console.log('v1', v)
             if ((findex != this.first.rindex || lindex != this.last.rindex) || update) {
                 requestAnimationFrame(() => {
                     let d = this.listDimensions[f];
@@ -128,6 +130,10 @@ export class VirualScrollWebComponent {
                     }
                     //this.virtual = v;
                     this.update.emit(v);
+                    if (update) {
+                        //change detection
+                        this.changed = [...this.changed, ''];
+                    }
                 });
                 //change detection
                 this.changed = [...this.changed, ''];
@@ -135,6 +141,7 @@ export class VirualScrollWebComponent {
         }
         else {
             let v = this.list.slice(0, 20);
+            //console.log('v2', v)
             //this.virtual = v;
             this.update.emit(v);
             //change detection
@@ -213,6 +220,7 @@ export class VirualScrollWebComponent {
     _setDimensions() {
         let oldTotal = this.totalHeight;
         let nodes = this.el.querySelectorAll('.virtual-slot .virtual-item');
+        //console.log('_setDimensions', nodes)
         if (nodes.length > 0) {
             for (let vindex = 0; vindex <= nodes.length - 1; vindex++) {
                 let node = nodes[vindex];
@@ -252,6 +260,7 @@ export class VirualScrollWebComponent {
         //if is init render need call update virtual, 
         //if is not init check update height. If height change render again!
         let isNewHeight = this._setDimensions();
+        //console.log('render', isNewHeight)
         //if first render finished, recalculate virtual
         if (!this.initRender) {
             this.initRender = true;
