@@ -3,16 +3,15 @@ export declare class VirualScrollWebComponent {
     list: Array<any>;
     selector: string;
     bottomOffset: number;
-    VirtualOffsetEnd: number;
+    virtualRatio: number;
     changed: string[];
     el: HTMLElement;
+    private contentEl;
     private position;
     private parentScroll;
-    private topPadding;
     private totalHeight;
     private first;
     private last;
-    private scrollEventSubscriber;
     private listDimensions;
     toBottom: EventEmitter<number>;
     update: EventEmitter<Array<any>>;

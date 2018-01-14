@@ -25,15 +25,17 @@ export class VirualScrollWebComponent {
 
   //offset bottom event
   @Prop() bottomOffset: number = 0;
-  
+
   //reserve of the bootom rows
-  @Prop() VirtualOffsetEnd = 3;
+  @Prop() virtualRatio = 3;
 
   //change detection strategy
   @State() changed: string[] = [];
 
   //root html
   @Element() el: HTMLElement;
+
+  private contentEl: HTMLElement;
 
   //position of scroll
   private position: number = 0;
@@ -44,18 +46,12 @@ export class VirualScrollWebComponent {
   //virtual items list
   //private virtual: Array<any> = [];
 
-  //virtual list translateY
-  private topPadding: number = 0;
-
   //full height of component
   private totalHeight: number = 0;
 
   //first and last viewed rows
   private first: any;
   private last: any;
-
-  //scroll event listener
-  private scrollEventSubscriber: any;
 
   //list items dimensions
   private listDimensions: Array<any> = [];
@@ -80,7 +76,7 @@ export class VirualScrollWebComponent {
 
   //offset of contentpage
   private contentOffsetTop: number = 0;
-  
+
 
   //change list event
   @PropDidChange('list')
@@ -134,9 +130,12 @@ export class VirualScrollWebComponent {
     let vscroll = this.el.querySelector('.vscroll');
     this.vscrollOffsetTop = (vscroll) ? vscroll['offsetTop'] : 0;
 
-    this.scrollEventSubscriber = this.parentScroll.addEventListener('scroll', (e) => {
-      this._listener();
-    });
+    this.contentEl = this.el.querySelector('.vscroll-content');
+
+    this.parentScroll.addEventListener('scroll', (e) => {
+      this.position = this.parentScroll['scrollTop'] - this.vscrollOffsetTop;
+      this.updateVirtual();
+    }, false);
   }
 
   private _listener() {
@@ -147,7 +146,6 @@ export class VirualScrollWebComponent {
   private _setDefParams() {
     this.first = null;
     this.last = null;
-    this.topPadding = 0;
     this.listDimensions = [];
     this.totalHeight = 0;
     this.position = 0;
@@ -170,13 +168,28 @@ export class VirualScrollWebComponent {
     //if first/last exist, set topPadding(content transformY).
     //virtual list set ...
     if (this.first && this.last) {
-      this.topPadding = this.first.start;
-      let v = this.list.slice(this.first.rindex, this.last.rindex + this.VirtualOffsetEnd);
+
+      let l = (this.last.rindex + this.virtualRatio) >= this.list.length ? this.list.length : this.last.rindex + this.virtualRatio
+
+      let f = (this.first.rindex - this.virtualRatio) < 0 ? 0 : this.first.rindex - this.virtualRatio;
+      // if (l == this.list.length) {
+      //   f = (findex - this.virtualRatio) < 0 ? 0 : findex - this.virtualRatio;
+      //   this.first = this.listDimensions[findex];
+      // }
+      let v = this.list.slice(f, l);
 
       if ((findex != this.first.rindex || lindex != this.last.rindex) || update) {
 
-        //this.virtual = v;
-        this.update.emit(v);
+        requestAnimationFrame(() => {
+
+          let d = this.listDimensions[f];
+          if (d) {
+            this.contentEl.style.transform = 'translateY(' + d.start + 'px)';
+            this.contentEl.style.webkitTransform = 'translateY(' + d.start + 'px)';
+          }
+          //this.virtual = v;
+          this.update.emit(v);
+        })
 
         //change detection
         this.changed = [...this.changed, ''];
@@ -216,9 +229,15 @@ export class VirualScrollWebComponent {
   //clear component data
   @Method()
   clear() {
-    this.list = [];
-    this._setDefParams();
-    this.changed = [...this.changed, ''];
+
+    requestAnimationFrame(() => {
+      this.list = [];
+      this._setDefParams();
+      this.contentEl.style.transform = 'translateY(' + 0 + 'px)';
+      this.contentEl.style.webkitTransform = 'translateY(' + 0 + 'px)';
+      this.changed = [...this.changed, ''];
+    })
+
   }
 
 
@@ -345,7 +364,7 @@ export class VirualScrollWebComponent {
         <div class="vscroll-back" style={{ height: this.totalHeight + 'px' }}>
 
         </div>
-        <div class={"vscroll-content " + (this.selector.length > 0 ? 'external' : 'inner')} style={{ transform: 'translateY(' + this.topPadding + 'px)' }}>
+        <div class={"vscroll-content " + (this.selector.length > 0 ? 'external' : 'inner')}>
           <slot name="virtual" />
         </div>
         <slot name="loader" />

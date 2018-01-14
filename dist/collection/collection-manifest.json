@@ -54,7 +54,7 @@
           "type": "string"
         },
         {
-          "name": "VirtualOffsetEnd",
+          "name": "virtualRatio",
           "type": "number"
         }
       ],

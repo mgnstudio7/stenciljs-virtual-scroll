@@ -152,7 +152,7 @@ export class FetchHelperWebComponent {
       <div onClick={this.reload.bind(this)} class="reload">reload</div>,
       <div onClick={this.scrolling.bind(this)} class="scrolling">scrolling</div>,
       <div class="virtual-container">
-        <virtual-scroll bottom-offset="5" virtual-offset-end="5" selector={this.selector}>
+        <virtual-scroll bottom-offset="5" virtual-ratio="15" selector={this.selector}>
           <div slot="virtual" class="virtual-slot">
             {
               this.virtual.map((item, i) =>

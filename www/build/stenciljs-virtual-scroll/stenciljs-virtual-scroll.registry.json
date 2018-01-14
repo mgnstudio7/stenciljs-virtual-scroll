@@ -4,8 +4,8 @@
     [
       "fetch-helper",
       [
-        "t9uwjdky",
-        "f3hcuaru"
+        "haz9flny",
+        "vxuarj8x"
       ],
       1,
       [
@@ -32,17 +32,11 @@
     [
       "virtual-scroll",
       [
-        "4t3xd1zx",
-        "njqhnrkj"
+        "3ijwecof",
+        "irjs6jos"
       ],
       1,
       [
-        [
-          "VirtualOffsetEnd",
-          1,
-          1,
-          4
-        ],
         [
           "bottomOffset",
           1,
@@ -84,6 +78,12 @@
         [
           "setInfinateOn",
           6
+        ],
+        [
+          "virtualRatio",
+          1,
+          1,
+          4
         ]
       ],
       0,
