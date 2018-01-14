@@ -262,3 +262,7 @@ set list item index, duration, offset
 **virtual-ratio** 
 
 add nodes after last and before first viewed nodes in viewport.
+
+# WARN
+
+nodes(list items) index must be different. Component set different index but if you change it, or if your list contain dublicates there may be problems.
