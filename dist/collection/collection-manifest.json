@@ -94,9 +94,6 @@
           "event": "update"
         }
       ],
-      "host": {
-        "style": "font-size:20px;"
-      },
       "slot": "hasNamedSlots"
     }
   ],

@@ -1,6 +1,6 @@
 {
   "name": "stenciljs-virtual-scroll",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "steniljs virtual scroll webcomponent",
   "main": "dist/stenciljs-virtual-scroll.js",
   "types": "dist/types/index.d.ts",
@@ -33,6 +33,14 @@
     "stenciljs",
     "webcomponent"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mgnstudio7/stenciljs-virtual-scroll.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mgnstudio7/stenciljs-virtual-scroll/issues"
+  },
+  "homepage": "https://github.com/mgnstudio7/stenciljs-virtual-scroll#readme",
   "author": "mgnstudio",
   "license": "MIT",
   "jest": {
