@@ -1,12 +1,6 @@
 /*
 logic of this component base on
-
-Component can work in two "scroll states"
-1. Inner scroll container. scroll event listen inner html element 'vscroll'
-2. External scroll component. scroll event listen on inner html element, he most set in component attributes
-External scroll container must heip if ypu are using some additional content on page,
-and it must scrolled with scroll component.
-
+...
 */
 
 import { Component, Prop, State, Element, PropDidChange, PropWillChange, Event, EventEmitter, Method } from '@stencil/core';
