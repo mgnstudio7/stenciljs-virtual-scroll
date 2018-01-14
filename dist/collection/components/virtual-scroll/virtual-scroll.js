@@ -111,10 +111,10 @@ export class VirualScrollWebComponent {
         if (this.first && this.last) {
             let lastOffsetIndex = (this.last.rindex + this.virtualRatio) >= this.list.length ? this.list.length : this.last.rindex + this.virtualRatio;
             let firstOffsetIndex = (this.first.rindex - this.virtualRatio) < 0 ? 0 : this.first.rindex - this.virtualRatio;
-            // if (lastOffsetIndex == this.list.length && (this.totalHeight - this.position - this.parentScrollHeight) < 0) {
-            //   firstOffsetIndex = (findex - this.virtualRatio) < 0 ? 0 : findex - this.virtualRatio;
-            //   this.first = this.listDimensions[findex];
-            // }
+            if (lastOffsetIndex == this.list.length && (this.totalHeight - this.position - this.parentScrollHeight) < 0) {
+                firstOffsetIndex = (findex - this.virtualRatio) < 0 ? 0 : findex - this.virtualRatio;
+                this.first = this.listDimensions[findex];
+            }
             let v = this.list.slice(firstOffsetIndex, lastOffsetIndex);
             if ((findex != this.first.rindex || lindex != this.last.rindex) || update) {
                 requestAnimationFrame(() => {
