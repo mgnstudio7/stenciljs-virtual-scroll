@@ -13,10 +13,7 @@ import { Component, Prop, State, Element, PropDidChange, PropWillChange, Event, 
 
 @Component({
   tag: 'virtual-scroll',
-  styleUrl: 'virtual-scroll.scss',
-  host: {
-    style: 'font-size:20px;'
-  }
+  styleUrl: 'virtual-scroll.scss'
 })
 export class VirualScrollWebComponent {
 
