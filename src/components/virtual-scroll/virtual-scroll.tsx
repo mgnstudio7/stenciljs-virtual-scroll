@@ -351,7 +351,7 @@ export class VirualScrollWebComponent {
         this.listDimensions[i].end = this.listDimensions[i].end - d.height;
       }
 
-      console.log(this.listDimensions)
+      //console.log(this.listDimensions)
       
       this.totalHeight = this.listDimensions[this.listDimensions.length - 1].end;
     }
@@ -371,9 +371,9 @@ export class VirualScrollWebComponent {
         let rindex = node['id'];
         let d = this.listDimensions.filter(f => f.rindex == rindex)[0];
         if (d && (d.height != node['offsetHeight'])) {
-          console.warn("One or more nodes change height after calculation dimensions. Check scroll", rindex);
-          console.log('node', node);
-          console.log('this.listDimensions[index]', d);
+          //console.warn("One or more nodes change height after calculation dimensions. Check scroll", rindex);
+          //console.log('node', node);
+          //console.log('this.listDimensions[index]', d);
         }
       }
     }
