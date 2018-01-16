@@ -34,9 +34,21 @@ export class VirualScrollWebComponent {
         this.listDimensions = [];
         //bool state to detect init render
         this.initRender = false;
+        this.toNextUpdateDimensions = false;
+        this.stackToDelete = [];
     }
     //change list event2
-    dataDidChangeHandler(newValue) {
+    dataDidChangeHandler(newValue, oldValue) {
+        let deleted = oldValue.filter(f => newValue.filter(f2 => f2.index == f.index).length == 0);
+        if (deleted.length > 0) {
+            deleted.map(m => {
+                this._deleteDimension(m.index);
+            });
+        }
+        //let edited = newValue.filter(f => oldValue.filter(f2 => f2.index == f.index).length == 0);
+        //console.log('let deleted', deleted);
+        //console.log('let edited', edited);
+        //console.log('let list', edited);
         this.list.map((m, i) => {
             if (!m.index) {
                 m.index = i;
@@ -113,12 +125,12 @@ export class VirualScrollWebComponent {
             let firstOffsetIndex = (this.first.rindex - this.virtualRatio) < 0 ? 0 : this.first.rindex - this.virtualRatio;
             if (lastOffsetIndex == this.list.length && (this.totalHeight - this.position - this.parentScrollHeight) < 0) {
                 firstOffsetIndex = (findex - this.virtualRatio) < 0 ? 0 : findex - this.virtualRatio;
-                this.first = this.listDimensions[findex];
+                this.first = this.listDimensions.filter(f => f.rindex == findex)[0];
             }
             let v = this.list.slice(firstOffsetIndex, lastOffsetIndex);
             if ((findex != this.first.rindex || lindex != this.last.rindex) || update) {
                 requestAnimationFrame(() => {
-                    let d = this.listDimensions[firstOffsetIndex];
+                    let d = this.listDimensions.filter(f => f.rindex == firstOffsetIndex)[0];
                     if (d) {
                         this.contentEl.style.transform = 'translateY(' + d.start + 'px)';
                         this.contentEl.style.webkitTransform = 'translateY(' + d.start + 'px)';
@@ -172,7 +184,7 @@ export class VirualScrollWebComponent {
     scrollToNode(index, speed, offset = 0) {
         if (this.parentScroll) {
             if (index <= this.listDimensions.length - 1) {
-                let dimension = this.listDimensions[index];
+                let dimension = this.listDimensions.filter(f => f.rindex == index)[0];
                 this._scrollTo(dimension.start + offset, speed);
             }
             else {
@@ -214,14 +226,19 @@ export class VirualScrollWebComponent {
     //recalculation dimesions of list items
     _setDimensions() {
         let oldTotal = this.totalHeight;
+        if (this.toNextUpdateDimensions) {
+            this.listDimensions = [];
+        }
+        this.toNextUpdateDimensions = false;
         let nodes = this.el.querySelectorAll('.virtual-slot .virtual-item');
         //console.log('_setDimensions', nodes)
         if (nodes.length > 0) {
             for (let vindex = 0; vindex <= nodes.length - 1; vindex++) {
                 let node = nodes[vindex];
-                let index = node['id'];
-                if (!this.listDimensions[index]) {
-                    this._addNewDimension(node['offsetHeight'], index);
+                let rindex = node['id'];
+                let d = this.listDimensions.filter(f => f.rindex == rindex)[0];
+                if (!d) {
+                    this._addNewDimensionToEnd(node['offsetHeight'], rindex);
                     this.totalHeight = this.listDimensions[this.listDimensions.length - 1].end;
                 }
             }
@@ -229,7 +246,7 @@ export class VirualScrollWebComponent {
         return (this.totalHeight != oldTotal);
     }
     //Append new dimensions of list item
-    _addNewDimension(height, rindex) {
+    _addNewDimensionToEnd(height, rindex) {
         let parentEnd = (this.listDimensions.length > 0) ? this.listDimensions[this.listDimensions.length - 1].end : 0;
         this.listDimensions.push({
             height: height,
@@ -238,17 +255,38 @@ export class VirualScrollWebComponent {
             rindex: parseInt(rindex)
         });
     }
+    _deleteDimension(rindex) {
+        //this index from list -> [index], if i get index from listDimensions -> filter()..
+        let d = this.listDimensions.filter(f => f.rindex == rindex)[0];
+        if (d) {
+            d.start = 0;
+            d.end = 0;
+            for (let i = rindex + 1; i <= this.listDimensions.length - 1; i++) {
+                this.listDimensions[i].start = this.listDimensions[i].start - d.height;
+                this.listDimensions[i].end = this.listDimensions[i].end - d.height;
+            }
+            console.log(this.listDimensions);
+            this.totalHeight = this.listDimensions[this.listDimensions.length - 1].end;
+        }
+    }
+    refresh() {
+        this.toNextUpdateDimensions = true;
+    }
     //Append new dimensions of list item
     _testDimensions() {
         let nodes = this.el.querySelector('.virtual-slot').childNodes;
-        let offsetIndex = (this.first && this.first.rindex > 0) ? this.first.rindex : 0;
-        this.list.map((m, i) => {
-            if (this.listDimensions[i] && nodes[i - offsetIndex]) {
-                if (nodes[i - offsetIndex]['offsetHeight'] != this.listDimensions[i].height) {
-                    console.warn("One or more nodes change height after calculation dimensions. Check scroll", i);
+        if (nodes.length > 0) {
+            for (let vindex = 0; vindex <= nodes.length - 1; vindex++) {
+                let node = nodes[vindex];
+                let rindex = node['id'];
+                let d = this.listDimensions.filter(f => f.rindex == rindex)[0];
+                if (d && (d.height != node['offsetHeight'])) {
+                    console.warn("One or more nodes change height after calculation dimensions. Check scroll", rindex);
+                    console.log('node', node);
+                    console.log('this.listDimensions[index]', d);
                 }
             }
-        });
+        }
     }
     componentDidUpdate() {
         //after component render, need to add new dimensions if virtual nodes, change height
@@ -277,7 +315,7 @@ export class VirualScrollWebComponent {
             h("slot", { name: "loader" })));
     }
     static get is() { return "virtual-scroll"; }
-    static get properties() { return { "bottomOffset": { "type": Number }, "changed": { "state": true }, "clear": { "method": true }, "el": { "elementRef": true }, "list": { "type": "Any", "watchCallbacks": ["dataDidChangeHandler"] }, "scrollToNode": { "method": true }, "selector": { "type": String }, "setInfinateFinally": { "method": true }, "setInfinateOn": { "method": true }, "virtualRatio": { "type": Number } }; }
+    static get properties() { return { "bottomOffset": { "type": Number }, "changed": { "state": true }, "clear": { "method": true }, "el": { "elementRef": true }, "list": { "type": "Any", "watchCallbacks": ["dataDidChangeHandler"] }, "refresh": { "method": true }, "scrollToNode": { "method": true }, "selector": { "type": String }, "setInfinateFinally": { "method": true }, "setInfinateOn": { "method": true }, "virtualRatio": { "type": Number } }; }
     static get events() { return [{ "name": "toBottom", "method": "toBottom", "bubbles": true, "cancelable": true, "composed": true }, { "name": "update", "method": "update", "bubbles": true, "cancelable": true, "composed": true }]; }
     static get style() { return "/**style-placeholder:virtual-scroll:**/"; }
 }

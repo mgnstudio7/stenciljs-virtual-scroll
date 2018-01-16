@@ -21,7 +21,9 @@ export declare class VirualScrollWebComponent {
     private last;
     private listDimensions;
     private initRender;
-    dataDidChangeHandler(newValue: any): void;
+    private toNextUpdateDimensions;
+    private stackToDelete;
+    dataDidChangeHandler(newValue: Array<any>, oldValue: Array<any>): void;
     componentDidLoad(): void;
     unwatch(): void;
     private _listener();
@@ -36,7 +38,9 @@ export declare class VirualScrollWebComponent {
     private _scrollToIndex(index);
     private _scrollTo(to, duration);
     private _setDimensions();
-    private _addNewDimension(height, rindex);
+    private _addNewDimensionToEnd(height, rindex);
+    private _deleteDimension(rindex);
+    refresh(): void;
     private _testDimensions();
     componentDidUpdate(): void;
     render(): JSX.Element;

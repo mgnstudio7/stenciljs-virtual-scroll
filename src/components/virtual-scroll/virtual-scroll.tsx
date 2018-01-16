@@ -66,9 +66,24 @@ export class VirualScrollWebComponent {
   //bool state to detect init render
   private initRender: boolean = false;
 
+  private toNextUpdateDimensions: boolean = false;
+  private stackToDelete: Array<number> = [];
+
   //change list event2
   @Watch('list')
-  dataDidChangeHandler(newValue) {
+  dataDidChangeHandler(newValue: Array<any>, oldValue: Array<any>) {
+
+    let deleted = oldValue.filter(f => newValue.filter(f2 => f2.index == f.index).length == 0);
+    if (deleted.length > 0) {
+      deleted.map(m => {
+        this._deleteDimension(m.index);
+      })
+    }
+    //let edited = newValue.filter(f => oldValue.filter(f2 => f2.index == f.index).length == 0);
+    //console.log('let deleted', deleted);
+    //console.log('let edited', edited);
+    //console.log('let list', edited);
+
     this.list.map((m, i) => {
       if (!m.index) {
         m.index = i;
@@ -81,7 +96,7 @@ export class VirualScrollWebComponent {
 
   //life cicle methods
   componentDidLoad() {
-    
+
     this._setDefParams();
 
     //get scroll element
@@ -94,16 +109,16 @@ export class VirualScrollWebComponent {
 
     //get scroll element height
     this.parentScrollHeight = this.parentScroll['offsetHeight'];
-    
+
     //get scroll element offset top
     this.contentOffsetTop = (this.parentScroll) ? this.parentScroll['offsetTop'] : 0;
-    
+
     //get content element 
     this.contentEl = this.el.querySelector('.vscroll-content');
-    
+
     let vscroll = this.el.querySelector('.vscroll');
     this.vscrollOffsetTop = (vscroll) ? vscroll['offsetTop'] : 0;
-    
+
     this.parentScroll.addEventListener('scroll', (e) => {
       this.position = this.parentScroll['scrollTop'] - this.vscrollOffsetTop;
       this.updateVirtual();
@@ -165,21 +180,21 @@ export class VirualScrollWebComponent {
       let firstOffsetIndex = (this.first.rindex - this.virtualRatio) < 0 ? 0 : this.first.rindex - this.virtualRatio;
       if (lastOffsetIndex == this.list.length && (this.totalHeight - this.position - this.parentScrollHeight) < 0) {
         firstOffsetIndex = (findex - this.virtualRatio) < 0 ? 0 : findex - this.virtualRatio;
-        this.first = this.listDimensions[findex];
+        this.first = this.listDimensions.filter( f => f.rindex == findex)[0];
       }
       let v = this.list.slice(firstOffsetIndex, lastOffsetIndex);
 
       if ((findex != this.first.rindex || lindex != this.last.rindex) || update) {
 
         requestAnimationFrame(() => {
-          let d = this.listDimensions[firstOffsetIndex];
+          let d = this.listDimensions.filter( f => f.rindex == firstOffsetIndex)[0];
           if (d) {
             this.contentEl.style.transform = 'translateY(' + d.start + 'px)';
             this.contentEl.style.webkitTransform = 'translateY(' + d.start + 'px)';
           }
           //this.virtual = v;
           this.update.emit(v);
-          
+
           if (update) {
             //change detection
             this.changed = [...this.changed, ''];
@@ -243,7 +258,7 @@ export class VirualScrollWebComponent {
   scrollToNode(index: number, speed: number, offset: number = 0) {
     if (this.parentScroll) {
       if (index <= this.listDimensions.length - 1) {
-        let dimension = this.listDimensions[index];
+        let dimension = this.listDimensions.filter(f => f.rindex == index)[0];
         this._scrollTo(dimension.start + offset, speed);
       }
       else {
@@ -290,14 +305,20 @@ export class VirualScrollWebComponent {
   private _setDimensions(): boolean {
     let oldTotal = this.totalHeight;
 
+    if (this.toNextUpdateDimensions) {
+      this.listDimensions = [];
+    }
+    this.toNextUpdateDimensions = false;
+
     let nodes = this.el.querySelectorAll('.virtual-slot .virtual-item');
     //console.log('_setDimensions', nodes)
     if (nodes.length > 0) {
       for (let vindex = 0; vindex <= nodes.length - 1; vindex++) {
         let node = nodes[vindex];
-        let index = node['id'];
-        if (!this.listDimensions[index]) {
-          this._addNewDimension(node['offsetHeight'], index);
+        let rindex = node['id'];
+        let d = this.listDimensions.filter(f => f.rindex == rindex)[0];
+        if (!d) {
+          this._addNewDimensionToEnd(node['offsetHeight'], rindex);
           this.totalHeight = this.listDimensions[this.listDimensions.length - 1].end;
         }
       }
@@ -307,7 +328,7 @@ export class VirualScrollWebComponent {
   }
 
   //Append new dimensions of list item
-  private _addNewDimension(height: number, rindex) {
+  private _addNewDimensionToEnd(height: number, rindex) {
     let parentEnd = (this.listDimensions.length > 0) ? this.listDimensions[this.listDimensions.length - 1].end : 0;
 
     this.listDimensions.push({
@@ -319,18 +340,43 @@ export class VirualScrollWebComponent {
 
   }
 
+  private _deleteDimension(rindex) {
+    //this index from list -> [index], if i get index from listDimensions -> filter()..
+    let d = this.listDimensions.filter(f => f.rindex == rindex)[0];
+    if (d) {
+      d.start = 0;
+      d.end = 0;
+      for (let i = rindex+1;i<=this.listDimensions.length-1;i++)  {
+        this.listDimensions[i].start = this.listDimensions[i].start - d.height;
+        this.listDimensions[i].end = this.listDimensions[i].end - d.height;
+      }
+
+      console.log(this.listDimensions)
+      
+      this.totalHeight = this.listDimensions[this.listDimensions.length - 1].end;
+    }
+  }
+
+  @Method()
+  refresh() {
+    this.toNextUpdateDimensions = true;
+  }
+
   //Append new dimensions of list item
   private _testDimensions() {
     let nodes = this.el.querySelector('.virtual-slot').childNodes;
-    let offsetIndex = (this.first && this.first.rindex > 0) ? this.first.rindex : 0;
-    this.list.map((m, i) => {
-      if (this.listDimensions[i] && nodes[i - offsetIndex]) {
-        if (nodes[i - offsetIndex]['offsetHeight'] != this.listDimensions[i].height) {
-          console.warn("One or more nodes change height after calculation dimensions. Check scroll", i);
+    if (nodes.length > 0) {
+      for (let vindex = 0; vindex <= nodes.length - 1; vindex++) {
+        let node = nodes[vindex];
+        let rindex = node['id'];
+        let d = this.listDimensions.filter(f => f.rindex == rindex)[0];
+        if (d && (d.height != node['offsetHeight'])) {
+          console.warn("One or more nodes change height after calculation dimensions. Check scroll", rindex);
+          console.log('node', node);
+          console.log('this.listDimensions[index]', d);
         }
       }
-    });
-
+    }
   }
 
   componentDidUpdate() {

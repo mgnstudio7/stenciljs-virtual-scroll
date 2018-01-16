@@ -71,6 +71,9 @@
           "name": "clear"
         },
         {
+          "name": "refresh"
+        },
+        {
           "name": "scrollToNode"
         },
         {
