@@ -117,6 +117,15 @@ before copyVirtualScrollCore property set standart app-script copy.config proper
   <script src="./build/virtualscroll.js"></script>
 ```
 
+OR
+
+```ts
+....
+import 'stenciljs-virtual-scroll';
+....
+
+``` 
+
 4. rebuild
 
 # Usage
