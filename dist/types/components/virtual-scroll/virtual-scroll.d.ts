@@ -12,6 +12,7 @@ export declare class VirualScrollWebComponent {
     private parentScrollHeight;
     private vscrollOffsetTop;
     private contentOffsetTop;
+    private elementOffsetTop;
     toBottom: EventEmitter<number>;
     update: EventEmitter<Array<any>>;
     private infinateOn;
@@ -23,6 +24,7 @@ export declare class VirualScrollWebComponent {
     private initRender;
     private toNextUpdateDimensions;
     private stackToDelete;
+    private scrollEventDispatch;
     dataDidChangeHandler(newValue: Array<any>, oldValue: Array<any>): void;
     componentDidLoad(): void;
     unwatch(): void;

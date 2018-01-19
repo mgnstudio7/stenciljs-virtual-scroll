@@ -21,6 +21,7 @@ export class VirualScrollWebComponent {
         //offset of scroll
         this.vscrollOffsetTop = 0;
         this.contentOffsetTop = 0;
+        this.elementOffsetTop = 0;
         /*EVENTS^^^*/
         /*LAZYLOAD*/
         //state to enable bottom infinate event
@@ -36,14 +37,17 @@ export class VirualScrollWebComponent {
         this.initRender = false;
         this.toNextUpdateDimensions = false;
         this.stackToDelete = [];
+        this.scrollEventDispatch = () => undefined;
     }
     //change list event2
     dataDidChangeHandler(newValue, oldValue) {
-        let deleted = oldValue.filter(f => newValue.filter(f2 => f2.index == f.index).length == 0);
-        if (deleted.length > 0) {
-            deleted.map(m => {
-                this._deleteDimension(m.index);
-            });
+        if (oldValue.length > 0) {
+            let deleted = oldValue.filter(f => newValue.filter(f2 => f2.index == f.index).length == 0);
+            if (deleted.length > 0) {
+                deleted.map(m => {
+                    this._deleteDimension(m.index);
+                });
+            }
         }
         //let edited = newValue.filter(f => oldValue.filter(f2 => f2.index == f.index).length == 0);
         //console.log('let deleted', deleted);
@@ -76,8 +80,14 @@ export class VirualScrollWebComponent {
         this.contentEl = this.el.querySelector('.vscroll-content');
         let vscroll = this.el.querySelector('.vscroll');
         this.vscrollOffsetTop = (vscroll) ? vscroll['offsetTop'] : 0;
-        this.parentScroll.addEventListener('scroll', (e) => {
-            this.position = this.parentScroll['scrollTop'] - this.vscrollOffsetTop;
+        this.scrollEventDispatch = this.parentScroll.addEventListener('scroll', (e) => {
+            //console.log(this.parentScroll['scrollTop'] - this.vscrollOffsetTop - this.elementOffsetTop + this.parentScrollHeight);
+            if (this.parentScroll['scrollTop'] - this.vscrollOffsetTop - this.elementOffsetTop + this.parentScrollHeight < 0) {
+                return;
+            }
+            this.position = this.parentScroll['scrollTop'] - this.vscrollOffsetTop - this.elementOffsetTop;
+            // console.log(this.position);
+            // console.log('-----');
             this.updateVirtual();
         }, false);
     }
@@ -94,6 +104,15 @@ export class VirualScrollWebComponent {
     //life cicle methods
     componentDidUnload() {
         this.unwatch();
+        if (this.scrollEventDispatch) {
+            this.scrollEventDispatch();
+            this.scrollEventDispatch = null;
+        }
+        // this.el.remove();
+        // this.contentEl.remove();
+        // this.parentScroll.remove();
+        // this.list = null;
+        // this.listDimensions = null;
     }
     //life cicle methods
     componentWillLoad() {
@@ -118,6 +137,8 @@ export class VirualScrollWebComponent {
         if (!this.last) {
             this.last = this.listDimensions[this.listDimensions.length - 1];
         }
+        // console.log('this.first', this.first)
+        // console.log('this.last', this.last)
         //if first/last exist, set topPadding(content transformY).
         //virtual list set ...
         if (this.first && this.last) {
@@ -127,7 +148,10 @@ export class VirualScrollWebComponent {
                 firstOffsetIndex = (findex - this.virtualRatio) < 0 ? 0 : findex - this.virtualRatio;
                 this.first = this.listDimensions.filter(f => f.rindex == findex)[0];
             }
-            let v = this.list.slice(firstOffsetIndex, lastOffsetIndex);
+            let v = [];
+            if (this.list.length > 0) {
+                v = this.list.slice(firstOffsetIndex, lastOffsetIndex);
+            }
             if ((findex != this.first.rindex || lindex != this.last.rindex) || update) {
                 requestAnimationFrame(() => {
                     let d = this.listDimensions.filter(f => f.rindex == firstOffsetIndex)[0];
@@ -147,12 +171,14 @@ export class VirualScrollWebComponent {
             }
         }
         else {
-            let v = this.list.slice(0, 20);
-            //console.log('v2', v)
-            //this.virtual = v;
-            this.update.emit(v);
-            //change detection
-            this.changed = [...this.changed, ''];
+            if (this.list.length > 0) {
+                let v = this.list.slice(0, 20);
+                //console.log('v2', v)
+                //this.virtual = v;
+                this.update.emit(v);
+                //change detection
+                this.changed = [...this.changed, ''];
+            }
         }
         //bottom event
         if (this.last && this.last.rindex >= this.list.length - 1 - this.bottomOffset) {
@@ -265,8 +291,13 @@ export class VirualScrollWebComponent {
                 this.listDimensions[i].start = this.listDimensions[i].start - d.height;
                 this.listDimensions[i].end = this.listDimensions[i].end - d.height;
             }
-            //console.log(this.listDimensions)
-            this.totalHeight = this.listDimensions[this.listDimensions.length - 1].end;
+            let notDeleted = this.listDimensions.filter(f => f.end > 0);
+            if (notDeleted.length == 0) {
+                this.totalHeight = 0;
+            }
+            else {
+                this.totalHeight = notDeleted[notDeleted.length - 1].end;
+            }
         }
     }
     refresh() {
@@ -297,6 +328,10 @@ export class VirualScrollWebComponent {
         //if first render finished, recalculate virtual
         if (!this.initRender) {
             this.initRender = true;
+            //if use external scroll, need take offset top scroll ellement
+            if (this.selector.length > 0) {
+                this.elementOffsetTop = this.el['offsetTop'];
+            }
             this.updateVirtual();
         }
         else {
@@ -308,7 +343,7 @@ export class VirualScrollWebComponent {
         }
     }
     render() {
-        return (h("div", { class: "vscroll " + (this.selector.length > 0 ? 'external ' : 'inner ') + (this.infinateFinally ? 'infinate-finally' : '') },
+        return (h("div", { class: "vscroll " + (this.selector.length > 0 ? 'external ' : 'inner ') + (this.infinateFinally ? 'infinate-finally ' : ' ') + (this.list.length == 0 ? 'cleared' : '') },
             h("div", { class: "vscroll-back", style: { height: this.totalHeight + 'px' } }),
             h("div", { class: "vscroll-content " + (this.selector.length > 0 ? 'external' : 'inner') },
                 h("slot", { name: "virtual" })),
