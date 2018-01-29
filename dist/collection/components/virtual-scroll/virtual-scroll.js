@@ -198,9 +198,9 @@ export class VirualScrollWebComponent {
     }
     //clear component data
     clear() {
+        this._setDefParams();
         requestAnimationFrame(() => {
             this.list = [];
-            this._setDefParams();
             this.contentEl.style.transform = 'translateY(' + 0 + 'px)';
             this.contentEl.style.webkitTransform = 'translateY(' + 0 + 'px)';
             this.changed = [...this.changed, ''];
