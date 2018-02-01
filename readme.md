@@ -111,13 +111,7 @@ module.exports = {
 
 before copyVirtualScrollCore property set standart app-script copy.config properties (if you are modify self config or my version is outdated, get only last 2 properties and put in your)
 
-3.  And register component in app 
-
-```html
-  <script src="./build/virtualscroll.js"></script>
-```
-
-OR
+3.  And register component in app module
 
 ```ts
 ....
