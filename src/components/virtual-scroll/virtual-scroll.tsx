@@ -347,7 +347,8 @@ export class VirualScrollWebComponent {
     this.toNextUpdateDimensions = false;
 
     let nodes = this.el.querySelectorAll('.virtual-slot .virtual-item');
-    //console.log('_setDimensions', nodes)
+    console.log('listDimensions', this.listDimensions)
+    console.log('_setDimensions', nodes)
     if (nodes.length > 0) {
       for (let vindex = 0; vindex <= nodes.length - 1; vindex++) {
         let node = nodes[vindex];
@@ -426,7 +427,7 @@ export class VirualScrollWebComponent {
     //if is not init check update height. If height change render again!
 
     let isNewHeight = this._setDimensions();
-    //console.log('render', isNewHeight)
+    console.log('render', isNewHeight)
 
     //if first render finished, recalculate virtual
     if (!this.initRender) {
