@@ -1,6 +1,6 @@
 {
   "name": "stenciljs-virtual-scroll",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "steniljs virtual scroll webcomponent",
   "module": "dist/esm/index.js",
   "main": "dist/virtualscroll.js",
