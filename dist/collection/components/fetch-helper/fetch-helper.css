@@ -1,0 +1,31 @@
+.cover {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  background-size: cover;
+  margin: 0 auto; }
+
+.title {
+  font-size: 15px;
+  height: 40px;
+  text-align: center; }
+
+.cover:after {
+  content: "";
+  display: block;
+  padding-bottom: 67%; }
+
+.reload, .scrolling {
+  position: absolute;
+  top: 0;
+  margin: 10px;
+  padding: 10px;
+  background: #ccc;
+  cursor: pointer;
+  z-index: 1; }
+
+.scrolling {
+  right: 0; }
+
+.reload {
+  left: 0; }

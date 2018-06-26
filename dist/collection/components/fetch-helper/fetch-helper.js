@@ -65,7 +65,7 @@ export class FetchHelperWebComponent {
             }, 3000);
         });
     }
-    reload(event) {
+    reload() {
         const scrollTag = this.el.querySelector('virtual-scroll');
         scrollTag.list = [];
         scrollTag.clear();
@@ -109,7 +109,7 @@ export class FetchHelperWebComponent {
             h("div", { onClick: this.scrolling.bind(this), class: "scrolling" }, "scrolling"),
             h("div", { class: "virtual-container" },
                 h("virtual-scroll", { "bottom-offset": "5", "virtual-ratio": "15", selector: this.selector },
-                    h("div", { slot: "virtual", class: "virtual-slot" }, this.virtual.map((item, i) => h("div", { class: "offer virtual-item", id: item.index },
+                    h("div", { slot: "virtual", class: "virtual-slot" }, this.virtual.map((item) => h("div", { class: "offer virtual-item", id: item.index },
                         h("div", { style: { backgroundImage: "url(" + item.thumbnailUrl + ")" }, class: "cover" }),
                         h("div", { class: "title" }, item.index),
                         h("div", { class: "title" }, item.title)))),
@@ -117,6 +117,20 @@ export class FetchHelperWebComponent {
         ]);
     }
     static get is() { return "fetch-helper"; }
-    static get properties() { return { "changed": { "state": true }, "el": { "elementRef": true }, "list": { "state": true }, "selector": { "type": String } }; }
+    static get properties() { return {
+        "changed": {
+            "state": true
+        },
+        "el": {
+            "elementRef": true
+        },
+        "list": {
+            "state": true
+        },
+        "selector": {
+            "type": String,
+            "attr": "selector"
+        }
+    }; }
     static get style() { return "/**style-placeholder:fetch-helper:**/"; }
 }

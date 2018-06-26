@@ -2,15 +2,15 @@
   "namespace": "virtualscroll",
   "fsNamespace": "virtualscroll",
   "loader": "../virtualscroll.js",
-  "core": "virtualscroll.s9exzzb5.js",
-  "coreSsr": "virtualscroll.rhe42ebv.js",
-  "corePolyfilled": "virtualscroll.abz7qqlw.js",
+  "global": "virtualscroll.global.js",
+  "core": "virtualscroll.28mji6fu.js",
+  "corePolyfilled": "virtualscroll.etffcq0f.js",
   "components": {
     "fetch-helper": {
-      "$": "dtirmnz0"
+      "$": "nqhdrz5d"
     },
     "virtual-scroll": {
-      "$": "mdiiq9vc"
+      "$": "kbufhwni"
     }
   }
 }

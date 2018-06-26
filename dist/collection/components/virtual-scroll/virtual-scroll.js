@@ -2,7 +2,6 @@
 logic of this component base on
 ...
 */
-import { EventEmitter } from '@stencil/core';
 export class VirualScrollWebComponent {
     constructor() {
         //list og imported values
@@ -20,7 +19,7 @@ export class VirualScrollWebComponent {
         this.parentScrollHeight = 0;
         //offset of scroll
         this.vscrollOffsetTop = 0;
-        this.contentOffsetTop = 0;
+        //private contentOffsetTop: number = 0;
         this.elementOffsetTop = 0;
         /*EVENTS^^^*/
         /*LAZYLOAD*/
@@ -36,11 +35,11 @@ export class VirualScrollWebComponent {
         //bool state to detect init render
         this.initRender = false;
         this.toNextUpdateDimensions = false;
-        this.stackToDelete = [];
+        // private stackToDelete: Array<number> = [];
         this.scrollEventDispatch = () => undefined;
     }
     //change list event2
-    dataDidChangeHandler(newValue, oldValue) {
+    watchHandler(newValue, oldValue) {
         if (oldValue.length > 0) {
             let deleted = oldValue.filter(f => newValue.filter(f2 => f2.index == f.index).length == 0);
             if (deleted.length > 0) {
@@ -75,12 +74,12 @@ export class VirualScrollWebComponent {
         //get scroll element height
         this.parentScrollHeight = this.parentScroll['offsetHeight'];
         //get scroll element offset top
-        this.contentOffsetTop = (this.parentScroll) ? this.parentScroll['offsetTop'] : 0;
+        //this.contentOffsetTop = (this.parentScroll) ? this.parentScroll['offsetTop'] : 0;
         //get content element 
         this.contentEl = this.el.querySelector('.vscroll-content');
         let vscroll = this.el.querySelector('.vscroll');
         this.vscrollOffsetTop = (vscroll) ? vscroll['offsetTop'] : 0;
-        this.scrollEventDispatch = this.parentScroll.addEventListener('scroll', (e) => {
+        this.scrollEventDispatch = this.parentScroll.addEventListener('scroll', () => {
             //console.log(this.parentScroll['scrollTop'] - this.vscrollOffsetTop - this.elementOffsetTop + this.parentScrollHeight);
             if (this.parentScroll['scrollTop'] - this.vscrollOffsetTop - this.elementOffsetTop + this.parentScrollHeight < 0) {
                 return;
@@ -257,7 +256,7 @@ export class VirualScrollWebComponent {
         }
         this.toNextUpdateDimensions = false;
         let nodes = this.el.querySelectorAll('.virtual-slot .virtual-item');
-        //console.log('_setDimensions', nodes)
+        // console.log('_setDimensions', nodes)
         if (nodes.length > 0) {
             for (let vindex = 0; vindex <= nodes.length - 1; vindex++) {
                 let node = nodes[vindex];
@@ -303,6 +302,11 @@ export class VirualScrollWebComponent {
     refresh() {
         this.toNextUpdateDimensions = true;
     }
+    //this method may be called if something is wrong in framework logic. For example: in ionic 3, the page component not updated with new data on the inactive tab page.
+    //The method re-checks all dimensions, add the missing ones and force update component.
+    forceUpdateComponent() {
+        this.__didUpdate(true);
+    }
     //Append new dimensions of list item
     _testDimensions() {
         let nodes = this.el.querySelector('.virtual-slot').childNodes;
@@ -320,11 +324,14 @@ export class VirualScrollWebComponent {
         }
     }
     componentDidUpdate() {
+        this.__didUpdate(false);
+    }
+    __didUpdate(upd) {
         //after component render, need to add new dimensions if virtual nodes, change height
         //if is init render need call update virtual, 
         //if is not init check update height. If height change render again!
         let isNewHeight = this._setDimensions();
-        //console.log('render', isNewHeight)
+        // console.log('isNewHeight', isNewHeight)
         //if first render finished, recalculate virtual
         if (!this.initRender) {
             this.initRender = true;
@@ -335,7 +342,7 @@ export class VirualScrollWebComponent {
             this.updateVirtual();
         }
         else {
-            if (isNewHeight) {
+            if (isNewHeight || upd) {
                 //change detection
                 this.changed = [...this.changed, ''];
             }
@@ -350,7 +357,61 @@ export class VirualScrollWebComponent {
             h("slot", { name: "loader" })));
     }
     static get is() { return "virtual-scroll"; }
-    static get properties() { return { "bottomOffset": { "type": Number }, "changed": { "state": true }, "clear": { "method": true }, "el": { "elementRef": true }, "list": { "type": "Any", "watchCallbacks": ["dataDidChangeHandler"] }, "refresh": { "method": true }, "scrollToNode": { "method": true }, "selector": { "type": String }, "setInfinateFinally": { "method": true }, "setInfinateOn": { "method": true }, "virtualRatio": { "type": Number } }; }
-    static get events() { return [{ "name": "toBottom", "method": "toBottom", "bubbles": true, "cancelable": true, "composed": true }, { "name": "update", "method": "update", "bubbles": true, "cancelable": true, "composed": true }]; }
+    static get properties() { return {
+        "bottomOffset": {
+            "type": Number,
+            "attr": "bottom-offset"
+        },
+        "changed": {
+            "state": true
+        },
+        "clear": {
+            "method": true
+        },
+        "el": {
+            "elementRef": true
+        },
+        "forceUpdateComponent": {
+            "method": true
+        },
+        "list": {
+            "type": "Any",
+            "attr": "list",
+            "watchCallbacks": ["watchHandler"]
+        },
+        "refresh": {
+            "method": true
+        },
+        "scrollToNode": {
+            "method": true
+        },
+        "selector": {
+            "type": String,
+            "attr": "selector"
+        },
+        "setInfinateFinally": {
+            "method": true
+        },
+        "setInfinateOn": {
+            "method": true
+        },
+        "virtualRatio": {
+            "type": Number,
+            "attr": "virtual-ratio"
+        }
+    }; }
+    static get events() { return [{
+            "name": "toBottom",
+            "method": "toBottom",
+            "bubbles": true,
+            "cancelable": true,
+            "composed": true
+        }, {
+            "name": "update",
+            "method": "update",
+            "bubbles": true,
+            "cancelable": true,
+            "composed": true
+        }]; }
     static get style() { return "/**style-placeholder:virtual-scroll:**/"; }
 }

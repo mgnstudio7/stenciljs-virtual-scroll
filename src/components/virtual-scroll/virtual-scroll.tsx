@@ -38,7 +38,7 @@ export class VirualScrollWebComponent {
   private parentScrollHeight: number = 0;
   //offset of scroll
   private vscrollOffsetTop: number = 0;
-  private contentOffsetTop: number = 0;
+  //private contentOffsetTop: number = 0;
   private elementOffsetTop: number = 0;
   /*ROOT DIMENSIONS^^^*/
 
@@ -68,13 +68,13 @@ export class VirualScrollWebComponent {
   private initRender: boolean = false;
 
   private toNextUpdateDimensions: boolean = false;
-  private stackToDelete: Array<number> = [];
+  // private stackToDelete: Array<number> = [];
 
   private scrollEventDispatch = () => undefined;
 
   //change list event2
   @Watch('list')
-  dataDidChangeHandler(newValue: Array<any>, oldValue: Array<any>) {
+  watchHandler(newValue: Array<any>, oldValue: Array<any>) {
 
     if (oldValue.length > 0) {
 
@@ -117,7 +117,7 @@ export class VirualScrollWebComponent {
     this.parentScrollHeight = this.parentScroll['offsetHeight'];
 
     //get scroll element offset top
-    this.contentOffsetTop = (this.parentScroll) ? this.parentScroll['offsetTop'] : 0;
+    //this.contentOffsetTop = (this.parentScroll) ? this.parentScroll['offsetTop'] : 0;
 
     //get content element 
     this.contentEl = this.el.querySelector('.vscroll-content');
@@ -126,7 +126,7 @@ export class VirualScrollWebComponent {
     this.vscrollOffsetTop = (vscroll) ? vscroll['offsetTop'] : 0;
 
 
-    this.scrollEventDispatch = this.parentScroll.addEventListener('scroll', (e) => {
+    this.scrollEventDispatch = this.parentScroll.addEventListener('scroll', () => {
 
       //console.log(this.parentScroll['scrollTop'] - this.vscrollOffsetTop - this.elementOffsetTop + this.parentScrollHeight);
       if (this.parentScroll['scrollTop'] - this.vscrollOffsetTop - this.elementOffsetTop + this.parentScrollHeight < 0) {
@@ -347,7 +347,7 @@ export class VirualScrollWebComponent {
     this.toNextUpdateDimensions = false;
 
     let nodes = this.el.querySelectorAll('.virtual-slot .virtual-item');
-    //console.log('_setDimensions', nodes)
+    // console.log('_setDimensions', nodes)
     if (nodes.length > 0) {
       for (let vindex = 0; vindex <= nodes.length - 1; vindex++) {
         let node = nodes[vindex];
@@ -401,6 +401,13 @@ export class VirualScrollWebComponent {
   refresh() {
     this.toNextUpdateDimensions = true;
   }
+  
+  //this method may be called if something is wrong in framework logic. For example: in ionic 3, the page component not updated with new data on the inactive tab page.
+  //The method re-checks all dimensions, add the missing ones and force update component.
+  @Method()
+  forceUpdateComponent() {
+    this.__didUpdate(true);
+  }
 
   //Append new dimensions of list item
   private _testDimensions() {
@@ -420,13 +427,17 @@ export class VirualScrollWebComponent {
   }
 
   componentDidUpdate() {
+    this.__didUpdate(false);
+  }
+
+  __didUpdate(upd) {
 
     //after component render, need to add new dimensions if virtual nodes, change height
     //if is init render need call update virtual, 
     //if is not init check update height. If height change render again!
 
     let isNewHeight = this._setDimensions();
-    //console.log('render', isNewHeight)
+    // console.log('isNewHeight', isNewHeight)
 
     //if first render finished, recalculate virtual
     if (!this.initRender) {
@@ -440,7 +451,7 @@ export class VirualScrollWebComponent {
       this.updateVirtual();
     }
     else {
-      if (isNewHeight) {
+      if (isNewHeight || upd) {
         //change detection
         this.changed = [...this.changed, ''];
       }

@@ -1,0 +1,31 @@
+.vscroll.inner {
+  overflow-y: auto;
+  height: 100%; }
+
+.vscroll.external {
+  overflow-y: hidden; }
+
+.vscroll {
+  overflow-x: hidden;
+  position: relative;
+  display: block; }
+  .vscroll .vscroll-back {
+    width: 1px;
+    opacity: 0; }
+  .vscroll .vscroll-content {
+    top: 0;
+    left: 0;
+    width: 100%;
+    position: absolute; }
+  .vscroll .vscroll-content.inner {
+    height: 100%; }
+
+.infinate-finally div[slot='loader'] {
+  visibility: hidden; }
+
+.cleared div[slot='loader'] {
+  display: none; }
+
+virual-scroll {
+  height: 100%;
+  display: block; }

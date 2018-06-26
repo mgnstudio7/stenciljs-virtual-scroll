@@ -262,6 +262,16 @@ set list item index, duration, offset
 ....
 ```
 
+**forceUpdateComponent()** 
+
+this method re-checks all dimensions, add the missing ones and force update component
+
+```ts
+....
+    this.vscroll.nativeElement.forceUpdateComponent();
+....
+```
+
 **virtual-ratio** 
 
 add nodes after last and before first viewed nodes in viewport.

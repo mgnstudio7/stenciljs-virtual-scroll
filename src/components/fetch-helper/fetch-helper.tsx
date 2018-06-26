@@ -97,7 +97,7 @@ export class FetchHelperWebComponent {
     });
   }
 
-  reload(event: UIEvent) {
+  reload() {
 
     const scrollTag: any = this.el.querySelector('virtual-scroll');
     scrollTag.list = [];
@@ -155,7 +155,7 @@ export class FetchHelperWebComponent {
         <virtual-scroll bottom-offset="5" virtual-ratio="15" selector={this.selector}>
           <div slot="virtual" class="virtual-slot">
             {
-              this.virtual.map((item, i) =>
+              this.virtual.map((item) =>
                 <div class="offer virtual-item" id={item.index}>
                   <div style={{ backgroundImage: "url(" + item.thumbnailUrl + ")" }} class="cover">
                   </div>
