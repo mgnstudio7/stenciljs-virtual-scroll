@@ -24,7 +24,7 @@ npm install stenciljs-virtual-scroll --save
 
 ```ts
 ....
-import 'stenciljs-virtual-scroll';
+import 'stenciljs-virtual-scroll/dist/virtualscroll';
 ....
 
 ```
@@ -115,7 +115,7 @@ before copyVirtualScrollCore property set standart app-script copy.config proper
 
 ```ts
 ....
-import 'stenciljs-virtual-scroll';
+import 'stenciljs-virtual-scroll/dist/virtualscroll';
 ....
 
 ``` 

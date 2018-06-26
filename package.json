@@ -3,7 +3,7 @@
   "version": "1.2.1",
   "description": "steniljs virtual scroll webcomponent",
   "module": "dist/esm/index.js",
-  "main": "dist/index.js",
+  "main": "dist/virtualscroll.js",
   "types": "dist/types/index.d.ts",
   "collection": "dist/collection/collection-manifest.json",
   "files": [

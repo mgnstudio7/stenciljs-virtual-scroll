@@ -3,7 +3,7 @@
   "fsNamespace": "virtualscroll",
   "loader": "../virtualscroll.js",
   "global": "virtualscroll.global.js",
-  "core": "virtualscroll.28mji6fu.js",
+  "core": "virtualscroll.4u6xzod9.js",
   "corePolyfilled": "virtualscroll.etffcq0f.js",
   "components": {
     "fetch-helper": {

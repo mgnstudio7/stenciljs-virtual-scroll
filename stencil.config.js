@@ -3,10 +3,8 @@ const sass = require('@stencil/sass');
 exports.config = {
   namespace: 'virtualscroll',
   bundles: [
-    {
-      components: ['virtual-scroll'],
-      components: ['fetch-helper']
-    }
+      {components: ['virtual-scroll'] },
+      {components: ['fetch-helper'] }
   ],  
   outputTargets:[
     { 
