@@ -212,7 +212,7 @@ virtual-scroll {
 If you need to use it without framework, watch fetch-helper component.
 
 
-# IONIC 3 EXAMPLE
+# Ionic 3 example
 
 [stenciljs ionic-virtual-scroll-example](https://github.com/mgnstudio7/ionic-virtual-scroll-example)
 
